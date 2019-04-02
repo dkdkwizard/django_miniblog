@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Blog Site</title>
+{% endblock %}
+
+{% block content %}
+  <h1>Some Blog site</h1>
+  <p>Welcome, don't know what to say here.</p>
+  <h2>Hot Blogs</h2>
+  <p>Some Blog with most hits:</p>
+  <ul>
+  </ul>
+  <h2>What's New?</h2>
+  <p>Blogs with newest posts:</p>
+  <ul>
+  </ul>
+  <p>blogs: {{ num_blogs }}</p>
+{% endblock %}
