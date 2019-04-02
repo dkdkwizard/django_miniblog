@@ -19,9 +19,12 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
+import blog
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
+    path('accounts/signup', blog.views.signup, name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', RedirectView.as_view(url='blog/', permanent=True)),
 ]
