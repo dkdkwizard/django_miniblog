@@ -13,7 +13,6 @@ import datetime
 
 # Create your views here.
 def index(request):
-
     num_blogs = Blog.objects.count()
 
     context = {
@@ -24,6 +23,8 @@ def index(request):
 
 
 def signup(request):
+    if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('index'))
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -68,6 +69,16 @@ def createblog(request):
 class MyBlogsView(generic.ListView):
     model = Blog
     template_name = 'mybloglist.html'
-    
+    paginate_by = 10
+
     def get_queryset(self):
         return Blog.objects.filter(user=self.request.user)
+
+
+def blogview(request, title):
+    blog = Blog.objects.get(title=title)
+    context = {
+        'blog': blog,
+    }
+
+    return render(request, 'blog.html', context=context)

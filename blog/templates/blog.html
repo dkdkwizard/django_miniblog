@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ blog.title }}</title>
+{% endblock %}
+
+{% block content %}
+  <h2>{{ blog.title }}</h2>
+  <p style='color: gray'>{{ blog.description }}</p>
+  <hr>
+  {% for arti in blog.article.set_all %}
+  <h4><a href="">{{ arti.title }}</a></h4>
+  {% endfor %}
+{% endblock %}

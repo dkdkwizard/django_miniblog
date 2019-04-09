@@ -9,7 +9,7 @@
   <hr>
   {% if blog_list %}
     {% for b in blog_list %}
-      <h4><a href=""> {{ b.title }} </a> </h4>
+      <h4><a href="{{ b.get_url }}"> {{ b.title }} </a> </h4>
       <p>{{ b.description }}</p>
     {% endfor %}
   {% else %}
