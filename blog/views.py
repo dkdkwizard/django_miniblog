@@ -5,8 +5,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 
-from blog.models import Blog
-from blog.forms import SignUpForm, CreateBlogForm
+from blog.models import Blog, Article
+from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm
 
 import datetime
 
@@ -66,7 +66,26 @@ def createblog(request):
     return render(request, 'createblog.html', context=context)
 
 
-class MyBlogsView(generic.ListView):
+@login_required
+def createarticle(request, blogid):
+    if request.method == 'POST':
+        form = CreateArticleForm(request.POST)
+        if form.is_valid():
+            article = Article.objects.create(creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
+            article.content = form.cleaned_data.get('content')
+            article.save()
+
+            return HttpResponseRedirect(reverse('index'))
+
+    else:
+        form = CreateArticleForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'createarticle.html', context=context)
+
+
+class MyBlogsView(generic.ListView):  # view by Django generic listview
     model = Blog
     template_name = 'mybloglist.html'
     paginate_by = 10

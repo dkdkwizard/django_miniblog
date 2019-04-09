@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from ckeditor.fields import RichTextField
 
 
 # Create your models here.
@@ -27,7 +28,7 @@ class Article(models.Model):
     
     title = models.CharField(max_length=50, help_text='Article\'s title')
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
-    content = models.TextField(null=True, blank=True)
+    content = RichTextField()
     creation_time = models.DateTimeField('Creation DateTime')
     last_modify_time = models.DateTimeField('Last Modify DateTime')
     

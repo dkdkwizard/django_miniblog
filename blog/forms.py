@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextFormField
 
-from blog.models import Blog
+from blog.models import Blog, Article
 
 
 class SignUpForm(UserCreationForm):
@@ -19,3 +20,11 @@ class CreateBlogForm(forms.ModelForm):
     class Meta:
         model = Blog
         fields = ['title', 'description']
+
+
+class CreateArticleForm(forms.ModelForm):
+    content = RichTextFormField()
+
+    class Meta:
+        model = Article
+        fields = ['title', 'content']
