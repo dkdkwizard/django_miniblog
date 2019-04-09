@@ -25,10 +25,11 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()
-            user.profile.pen_name, user.profile.bio = form.cleaned_data.get('pen_name', 'bio')
+            user.profile.pen_name, user.profile.bio = form.cleaned_data.get('pen_name'), form.cleaned_data.get('bio')
+            user.profile.save()
             user.save()
             raw_password = form.cleaned_data.get('password1')
-            user.authenticate(username=user.username, password=raw_password)
+            user = authenticate(username=user.username, password=raw_password)
             login(request, user)
 
             return HttpResponseRedirect(reverse('index'))
@@ -39,3 +40,4 @@ def signup(request):
         'form': form
     }
     return render(request, 'signup.html', context=context)
+

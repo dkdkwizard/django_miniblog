@@ -8,6 +8,7 @@ from django.dispatch import receiver
 class Blog(models.Model):
 
     title = models.CharField(max_length=20, help_text='Blog\'s title')
+    description = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('Creation Date')
 
@@ -30,7 +31,7 @@ class Article(models.Model):
         ordering = ['creation_time']
 
 
-class Comemnt(models.Model):
+class Comment(models.Model):
 
     content = models.TextField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -46,6 +47,9 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     pen_name = models.CharField(max_length=20)
     bio = models.TextField('Biography', default='')
+
+    def __str__(self):
+        return self.user.username
 
 
 # update profile with users
