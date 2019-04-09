@@ -8,7 +8,9 @@
   <h2>{{ blog.title }}</h2>
   <p style='color: gray'>{{ blog.description }}</p>
   <hr>
-  {% for arti in blog.article.set_all %}
-  <h4><a href="">{{ arti.title }}</a></h4>
+  {% for arti in blog.article_set.all %}
+  <h5><a href="{{ arti.get_url }}">{{ arti.title }}</a></h5>
   {% endfor %}
+  <hr>
+  <p><a href="{%url 'createarticle' %}">+ new article</a></p>
 {% endblock %}

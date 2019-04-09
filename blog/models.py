@@ -34,6 +34,9 @@ class Article(models.Model):
     
     class Meta:
         ordering = ['creation_time']
+    
+    def get_url(self):
+        return reverse('article', args=[self.blog.title, self.title])
 
 
 class Comment(models.Model):

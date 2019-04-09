@@ -14,9 +14,10 @@ import datetime
 # Create your views here.
 def index(request):
     num_blogs = Blog.objects.count()
+    i = request.session.get('blog_id', 0)
 
     context = {
-        'num_blogs': num_blogs,
+        'num_blogs': i,
     }
 
     return render(request, 'index.html', context=context)
@@ -67,15 +68,20 @@ def createblog(request):
 
 
 @login_required
-def createarticle(request, blogid):
+def createarticle(request):
+    blog_id = request.session.get('blog_id', -1)
+    if blog_id < 0:
+        HttpResponseRedirect(reverse('myblog'))
     if request.method == 'POST':
         form = CreateArticleForm(request.POST)
         if form.is_valid():
-            article = Article.objects.create(creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
+            blog = Blog.objects.get(pk=blog_id)
+            article = Article.objects.create(blog=blog, creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
+            article.title = form.cleaned_data.get('title')
             article.content = form.cleaned_data.get('content')
             article.save()
 
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('blog', kwargs={'title': blog.title}))
 
     else:
         form = CreateArticleForm()
@@ -95,9 +101,23 @@ class MyBlogsView(generic.ListView):  # view by Django generic listview
 
 
 def blogview(request, title):
+    print(title)
     blog = Blog.objects.get(title=title)
+    if request.user == blog.user:
+        request.session['blog_id'] = blog.id
     context = {
         'blog': blog,
     }
 
     return render(request, 'blog.html', context=context)
+
+
+def articleview(request, blog, title):
+    blog = Blog.objects.get(title=blog)
+    arti = blog.article_set.get(title=title)
+
+    context = {
+        'arti': arti,
+    }
+
+    return render(request, 'article.html', context=context)

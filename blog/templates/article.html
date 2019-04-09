@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ arti.title }}</title>
+{% endblock %}
+
+{% block content %}
+  <h4><a href="{{ arti.blog.get_url }}">{{ arti.blog.title }}</a></h4>
+  <hr>
+  <h2>{{ arti.title }}</h2>
+  {{ arti.content|safe }}
+{% endblock %}
