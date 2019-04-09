@@ -2,9 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.views import generic
 
 from blog.models import Blog
-from blog.forms import SignUpForm
+from blog.forms import SignUpForm, CreateBlogForm
+
+import datetime
 
 
 # Create your views here.
@@ -41,3 +45,29 @@ def signup(request):
     }
     return render(request, 'signup.html', context=context)
 
+
+@login_required
+def createblog(request):
+    if request.method == 'POST':
+        form = CreateBlogForm(request.POST)
+        if form.is_valid():
+            blog = Blog.objects.create(user=request.user, date=datetime.date.today())
+            blog.title, blog.description = form.cleaned_data.get('title'), form.cleaned_data.get('description')
+            blog.save()
+
+            return HttpResponseRedirect(reverse('index'))
+
+    else:
+        form = CreateBlogForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'createblog.html', context=context)
+
+
+class MyBlogsView(generic.ListView):
+    model = Blog
+    template_name = 'mybloglist.html'
+    
+    def get_queryset(self):
+        return Blog.objects.filter(user=self.request.user)
