@@ -41,8 +41,15 @@ class CreateArticleForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
-    sign = forms.CharField(required=False)
-    
+    sign = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Your Nickname',
+        'style': ' width: 60%;'
+    }))
+    content = forms.CharField(widget=forms.Textarea(attrs={
+        'placeholder': 'Leave your comment here',
+        'style': ' width: 60%; resize:None;',
+    }))
+
     class Meta:
         model = Comment
         fields = ['sign', 'content']

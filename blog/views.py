@@ -80,34 +80,25 @@ def articleview(request, blog, year, month, day, arti):
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
+            comment = Comment.objects.create(article=arti, time=datetime.datetime.now())
             if request.user.is_authenticated:
-                comment = Comment.objects.create(user=request.user, sign=request.user.profile.pen_name)
+                comment.user = request.user
+                comment.sign = request.user.profile.pen_name
             else:
-                comment = Comment.objects.create(sign='guest')
-            comment.time = datetime.datetime.now()
+                comment.sign = 'guest'
             if form.cleaned_data['sign']:
                 comment.sign = form.cleaned_data['sign']
-            comment
-            blog.name_field = form.cleaned_data['name_field']
-            blog.save()
+            comment.content = form.cleaned_data['content']
+            comment.save()
 
-            return HttpResponseRedirect(reverse('article', kwargs={
-                'blog': blog.name_field,
-                'arti': arti.url_name,
-                'year': dt.year,
-                'month': dt.month,
-                'day': dt.day,
-            }))
+            return HttpResponseRedirect(request.path)
 
     else:
         form = CommentForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'createblog.html', context=context)
 
     context = {
         'arti': arti,
+        'form': form,
     }
 
     return render(request, 'article.html', context=context)

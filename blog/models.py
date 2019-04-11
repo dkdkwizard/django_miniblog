@@ -54,7 +54,7 @@ class Article(models.Model):
 
 
 class Comment(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     sign = models.CharField(max_length=20)

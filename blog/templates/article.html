@@ -7,10 +7,41 @@
 {% block content %}
   <h4><a href="{{ arti.blog.get_url }}">{{ arti.blog.title }}</a></h4>
   {% if user == arti.blog.user%}
-  <p style="float: right"><a href="{{ arti.modify_url }}"> M </a></p>
+    <p style="float: right"><a href="{{ arti.modify_url }}"> M </a></p>
   {% endif %}
   <h2>{{ arti.title }}</h2>
   <h6 style="color: rgb(199, 199, 199)">Post at {{ arti.creation_time }}{% if arti.creation_time != arti.last_modify_time %}, last modify: {{ arti.last_modify_time }}{% endif %}</h6>
   <hr>
   {{ arti.content|safe }}
+  <hr>
+  <h4>Comments</h4>
+  <br>
+  {% if arti.comment_set.count > 0 %}
+    {% for comt in arti.comment_set.all %}
+      <p>
+        <strong>{{comt.sign}}:</strong> <br>
+        &#9; {{ comt.content|linebreaks }}
+      </p>
+      <p align="right">post at {{comt.time}}</p>
+      <hr>
+    {% endfor %}
+  {% else %}
+    <p>There is no comment yet. Try to be the fisrt?</p>
+  {% endif %}
+  <form method="POST">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+    <p>Comment as {{ user.profile.pen_name}} (<a href="{% url 'logout' %}?next={{request.path}}">logout</a>)</p>
+    {% else %}
+    <p>Comment as a guest or <a href="{% url 'login' %}?next={{request.path}}">login</a></p>
+    <p>{{ form.sign }}</p>
+    {% endif%}
+    <p>
+    {{ form.content }}
+    </p>
+    {% for error in form.content.errors %}
+      <p style="color: red">{{ error }}</p>
+    {% endfor %}
+    <button type="submit">Post Comment</button>
+  </form>
 {% endblock %}
