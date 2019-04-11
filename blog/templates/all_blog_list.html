@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>All blogs</title>
+{% endblock %}
+
+{% block content %}
+  <h2>All Blogs</h2>
+  <hr>
+  {% if blog %}
+    {% for b in blog %}
+      <h4><a href="{{ b.get_url }}"> {{ b.title }} </a> </h4>
+      <p>{{ b.description }} by {{ b.user.profile.pen_name }}</p>
+    {% endfor %}
+  {% else %}
+  {% endif %}
+{% endblock %}

@@ -6,7 +6,11 @@
 
 {% block content %}
   <h4><a href="{{ arti.blog.get_url }}">{{ arti.blog.title }}</a></h4>
-  <hr>
+  {% if user == arti.blog.user%}
+  <p style="float: right"><a href="{{ arti.modify_url }}"> M </a></p>
+  {% endif %}
   <h2>{{ arti.title }}</h2>
+  <h6 style="color: rgb(199, 199, 199)">Post at {{ arti.creation_time }}{% if arti.creation_time != arti.last_modify_time %}, last modify: {{ arti.last_modify_time }}{% endif %}</h6>
+  <hr>
   {{ arti.content|safe }}
 {% endblock %}

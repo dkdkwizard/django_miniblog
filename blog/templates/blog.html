@@ -12,5 +12,7 @@
   <h5><a href="{{ arti.get_url }}">{{ arti.title }}</a></h5>
   {% endfor %}
   <hr>
-  <p><a href="{%url 'createarticle' %}">+ new article</a></p>
+  {% if user == blog.user %}
+  <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ new article</a></p>
+  {% endif %}
 {% endblock %}

@@ -13,6 +13,7 @@ class Blog(models.Model):
     description = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('Creation Date')
+    name_field = models.CharField(max_length=20, help_text='Blog\'s name field', default='')  # to avoid same title blogs
 
     class Meta:
         ordering = ['title']
@@ -21,14 +22,18 @@ class Blog(models.Model):
         return self.title
 
     def get_url(self):
-        return reverse('blog', args=[str(self.title)])
+        return reverse('blog', args=[self.name_field])
+    
+    def create_arti_url(self):
+        return reverse('createarticle', args=[self.name_field])
 
 
 class Article(models.Model):
     
     title = models.CharField(max_length=50, help_text='Article\'s title')
+    url_name = models.CharField(max_length=50, null=True, blank=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
-    content = RichTextField()
+    content = RichTextField(null=True, blank=True)
     creation_time = models.DateTimeField('Creation DateTime')
     last_modify_time = models.DateTimeField('Last Modify DateTime')
     
@@ -36,11 +41,20 @@ class Article(models.Model):
         ordering = ['creation_time']
     
     def get_url(self):
-        return reverse('article', args=[self.blog.title, self.title])
+        return reverse('article', args=[
+            self.blog.name_field,
+            self.creation_time.year,
+            self.creation_time.month,
+            self.creation_time.day,
+            self.url_name,
+        ])
+    
+    def modify_url(self):
+        return reverse('modify_article', args=[self.blog.name_field, self.id])
 
 
 class Comment(models.Model):
-
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     sign = models.CharField(max_length=20)
