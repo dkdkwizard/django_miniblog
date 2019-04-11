@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ that_user.profile.pen_name }}</title>
+{% endblock %}
+
+{% block content %}
+  <h2>{{ that_user.profile.pen_name }}</h2>
+  <hr>
+  <h4>Bio:</h4>
+  <p>{{ that_user.profile.bio }}</p>
+  <br>
+  <h4>Blogs: </h4>
+  <br>
+  {% if blog.count > 0 %}
+    {% for b in blog.all %}
+      <h5><a href="{{ b.get_url }}"> {{ b.title }} </a> </h4>
+      <p>{{ b.description }}</p>
+    {% endfor %}
+  {% else %}
+      <p>This user does not have any blog yet.</p>
+  {% endif %}
+{% endblock %}

@@ -22,6 +22,7 @@
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}
             <p>Hi, {{ user.profile.pen_name }}</p>
+            <li><a href="{% url 'user' id=user.pk %}">My Profile</a></li>
             <li><a href="{% url 'myblog' %}">My Blogs</a></li>
             <li><a href="{% url 'createblog' %}">Create New Blog</a></li>
             <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a></li>   

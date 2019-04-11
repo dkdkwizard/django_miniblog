@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -102,6 +103,20 @@ def articleview(request, blog, year, month, day, arti):
     }
 
     return render(request, 'article.html', context=context)
+
+
+def userpageview(request, id):
+    user = User.objects.get(pk=id)
+    profile = user.profile
+    blog = user.blog_set
+    comment = user.comment_set
+    context = {
+        'that_user': user,
+        'blog': blog,
+        'comment': comment,
+    }
+
+    return render(request, 'user.html', context=context)
 
 
 @login_required

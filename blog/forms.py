@@ -10,7 +10,9 @@ from blog.models import Blog, Article, Comment
 
 class SignUpForm(UserCreationForm):
     pen_name = forms.CharField(max_length=20, help_text='Required. Your pen name.')
-    bio = forms.CharField(widget=forms.Textarea, help_text='About you.')
+    bio = forms.CharField(widget=forms.Textarea(attrs={
+        'style': 'resize:None;'
+    }), help_text='About you.')
 
     class Meta:
         model = User

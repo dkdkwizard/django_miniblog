@@ -19,10 +19,15 @@
   {% if arti.comment_set.count > 0 %}
     {% for comt in arti.comment_set.all %}
       <p>
-        <strong>{{comt.sign}}:</strong> <br>
-        &#9; {{ comt.content|linebreaks }}
+        {% if comt.user %}
+          <a href="{% url 'user' id=comt.user.pk %}">{{comt.sign}}:</a>
+        {% else %}
+          {{comt.sign}}:
+        {% endif %}
+        <span style="color: rgb(199, 199, 199);">post at {{comt.time}}</span>
+        {{ comt.content|linebreaks }}
       </p>
-      <p align="right">post at {{comt.time}}</p>
+      
       <hr>
     {% endfor %}
   {% else %}
