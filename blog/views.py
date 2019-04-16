@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
+from django.conf import settings
 
 from blog.models import Blog, Article, Comment
 from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm
@@ -16,7 +17,7 @@ import datetime
 # Create your views here.
 def index(request):
     num_blogs = Blog.objects.count()
-
+    print(settings.STATIC_ROOT)
     context = {
         'num_blogs': num_blogs,
     }
@@ -34,7 +35,10 @@ def signup(request):
             user = form.save()
             user.refresh_from_db()
             user.profile.pen_name, user.profile.bio = form.cleaned_data.get('pen_name'), form.cleaned_data.get('bio')
+            if form.cleaned_data['photo']:
+                user.profile.photo = form.cleaned_data['photo']
             user.profile.save()
+            
             user.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
@@ -69,10 +73,12 @@ def edituserview(request):
     user = request.user
     prof = user.profile
     if request.method == 'POST':
-        form = EditUserForm(request.POST)
+        form = EditUserForm(request.POST, request.FILES)
         if form.is_valid():
             prof.pen_name = form.cleaned_data['pen_name']
             prof.bio = form.cleaned_data['bio']
+            if form.cleaned_data['photo']:
+                prof.photo = form.cleaned_data['photo']
             prof.save()
             return HttpResponseRedirect(reverse('user', args=[user.pk]))
     else:

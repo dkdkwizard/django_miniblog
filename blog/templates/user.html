@@ -6,6 +6,10 @@
 
 {% block content %}
   <h2>{{ that_user.profile.pen_name }}</h2>
+  <div class="imgbox" style="width:150px;height:150px;">
+    <img src="{{ that_user.profile.photo.url }}">
+  </div>
+  <span>remove </span>
   {% if user == that_user %}
   <p><a href="{% url 'edituser' %}">edit profile</a></p>
   {% endif %}

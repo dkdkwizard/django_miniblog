@@ -10,7 +10,7 @@
   {% if blog %}
     {% for b in blog %}
       <h4><a href="{{ b.get_url }}"> {{ b.title }} </a> </h4>
-      <p>{{ b.description }} by {{ b.user.profile.pen_name }}</p>
+      <p>{{ b.description }} by <a href="{%url 'user' id=b.user.pk %}">{{ b.user.profile.pen_name }}</a></p>
     {% endfor %}
   {% else %}
   {% endif %}

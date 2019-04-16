@@ -9,6 +9,7 @@ from blog.models import Blog, Article, Comment
 
 
 class SignUpForm(UserCreationForm):
+    photo = forms.ImageField(required=False)
     pen_name = forms.CharField(max_length=20, help_text='Required. Your pen name.')
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
@@ -16,10 +17,11 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'pen_name', 'bio', 'password1', 'password2', ]
+        fields = ['username', 'photo', 'pen_name', 'bio', 'password1', 'password2', ]
 
 
 class EditUserForm(forms.Form):
+    photo = forms.ImageField(required=False)
     pen_name = forms.CharField(max_length=20, help_text='Required. Your pen name.')
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
@@ -27,7 +29,7 @@ class EditUserForm(forms.Form):
 
     class Meta:
         model = User
-        fields = ['pen_name', 'bio']
+        fields = ['pen_name', 'bio', 'photo']
 
 
 class CreateBlogForm(forms.ModelForm):

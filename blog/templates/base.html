@@ -17,11 +17,14 @@
         <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'allblog'%}">All blogs</a></li>
-          <li><a href="">All bloggers</a></li>
+          <li><a href="{% static 'css/styles.css' %}">All bloggers</a></li>
         </ul>
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}
             <p>Hi, {{ user.profile.pen_name }}</p>
+            <div class="imgbox" style="width:100px;height:100px;">
+              <img src="{{ user.profile.photo.url }}" >
+            </div>
             <li><a href="{% url 'user' id=user.pk %}">My Profile</a></li>
             <li><a href="{% url 'myblog' %}">My Blogs</a></li>
             <li><a href="{% url 'createblog' %}">Create New Blog</a></li>

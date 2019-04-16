@@ -10,8 +10,10 @@
   <hr>
   {% for arti in blog.article_set.all %}
   <h5><a href="{{ arti.get_url }}">{{ arti.title }}</a></h5>
-  {% endfor %}
+  <h6 style="color: rgb(199, 199, 199)">Post at {{ arti.creation_time }}{% if arti.creation_time != arti.last_modify_time %}, last modify: {{ arti.last_modify_time }}{% endif %}</h6>
+  {{ arti.content|safe }}
   <hr>
+  {% endfor %}
   {% if user == blog.user %}
   <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ new article</a></p>
   {% endif %}

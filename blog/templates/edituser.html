@@ -6,11 +6,16 @@
 
 {% block content %}
   <h2>Profile</h2>
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form %}
       <p>
         {{ field.label_tag }}<br>
+        {% if field == form.photo %}
+        <div class="imgbox" style="width:150px;height:150px;">
+          <img src="{{ user.profile.photo.url }}">
+        </div>
+        {% endif %}
         {{ field }}
         {% if field.help_text %}
           <small style="color: grey">{{ field.help_text }}</small>
@@ -20,6 +25,6 @@
         {% endfor %}
       </p>
     {% endfor %}
-    <button type="Edit">Sign up</button>
+    <button type="submit">Edit</button>
   </form>
 {% endblock %}

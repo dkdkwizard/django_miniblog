@@ -3,3 +3,13 @@
     padding: 0;
     list-style: none;
 }
+
+.imgbox {
+    overflow: hidden;
+    width:150px;
+    height:150px;
+}
+
+.imgbox img {
+    height:100%;
+}

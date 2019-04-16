@@ -1,3 +1,6 @@
+import os
+from uuid import uuid4
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -64,11 +67,26 @@ class Comment(models.Model):
         ordering = ['time']
 
 
+def path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        # get filename
+        if instance.user:
+            filename = '{}.{}'.format(instance.user.pk, ext)
+        else:
+            # set filename as random string
+            filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(path, filename)
+    return wrapper
+
+
 class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     pen_name = models.CharField(max_length=20)
     bio = models.TextField('Biography', default='')
+    photo = models.ImageField(upload_to=path_and_rename('portrait/'), default='portrait/default.png')
 
     def __str__(self):
         return self.user.username
