@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views import generic
 
 from blog.models import Blog, Article, Comment
-from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm
+from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm
 
 import datetime
 
@@ -48,6 +48,44 @@ def signup(request):
         'form': form
     }
     return render(request, 'signup.html', context=context)
+
+
+def userpageview(request, id):
+    user = User.objects.get(pk=id)
+    profile = user.profile
+    blog = user.blog_set
+    comment = user.comment_set
+    context = {
+        'that_user': user,
+        'blog': blog,
+        'comment': comment,
+    }
+
+    return render(request, 'user.html', context=context)
+
+
+@login_required
+def edituserview(request):
+    user = request.user
+    prof = user.profile
+    if request.method == 'POST':
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            prof.pen_name = form.cleaned_data['pen_name']
+            prof.bio = form.cleaned_data['bio']
+            prof.save()
+            return HttpResponseRedirect(reverse('user', args=[user.pk]))
+    else:
+        form = EditUserForm(
+            initial={
+                'pen_name': prof.pen_name,
+                'bio': prof.bio,
+            }
+        )
+    context = {
+        'form': form,
+    }
+    return render(request, 'edituser.html', context=context)
 
 
 def allblogview(request):
@@ -103,20 +141,6 @@ def articleview(request, blog, year, month, day, arti):
     }
 
     return render(request, 'article.html', context=context)
-
-
-def userpageview(request, id):
-    user = User.objects.get(pk=id)
-    profile = user.profile
-    blog = user.blog_set
-    comment = user.comment_set
-    context = {
-        'that_user': user,
-        'blog': blog,
-        'comment': comment,
-    }
-
-    return render(request, 'user.html', context=context)
 
 
 @login_required

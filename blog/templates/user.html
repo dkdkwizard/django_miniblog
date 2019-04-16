@@ -6,6 +6,9 @@
 
 {% block content %}
   <h2>{{ that_user.profile.pen_name }}</h2>
+  {% if user == that_user %}
+  <p><a href="{% url 'edituser' %}">edit profile</a></p>
+  {% endif %}
   <hr>
   <h4>Bio:</h4>
   <p>{{ that_user.profile.bio }}</p>
