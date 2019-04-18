@@ -9,8 +9,11 @@
   <div class="imgbox" style="width:150px;height:150px;">
     <img src="{{ that_user.profile.photo.url }}">
   </div>
-  <span>remove </span>
   {% if user == that_user %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" name="remove">Remove</button>
+  </form>
   <p><a href="{% url 'edituser' %}">edit profile</a></p>
   {% endif %}
   <hr>

@@ -85,8 +85,9 @@ class PathAndRename(object):
 
     def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
+        pk = instance.user.pk
         if instance.pk:
-            filename = '{}.{}'.format(instance.pk, ext)
+            filename = '{}.{}'.format(pk, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)
@@ -103,6 +104,36 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+        
+
+# delete photo after profile is deleted
+@receiver(models.signals.post_delete, sender=Profile)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    if instance.photo != 'portrait/default.png':
+        if os.path.isfile(instance.photo.path):
+            os.remove(instance.photo.path)
+
+
+# delete photo before save new photo
+@receiver(models.signals.pre_save, sender=Profile)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `Profile` object is updated
+    with new file.
+    """
+    if not instance.pk:
+        return False
+
+    old_file = Profile.objects.get(pk=instance.pk).photo
+    new_file = instance.photo
+    if old_file != new_file and old_file != 'portrait/default.png':
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
 
 
 # update profile with users

@@ -59,6 +59,12 @@ def user_page_view(request, id):
     profile = user.profile
     blog = user.blog_set
     comment = user.comment_set
+
+    if request.method == 'POST':
+        if 'remove' in request.POST:
+            profile.photo = 'portrait/default.png'
+            profile.save()
+            return HttpResponseRedirect(request.path)
     context = {
         'that_user': user,
         'blog': blog,
