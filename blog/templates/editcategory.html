@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ blog.title }} - edit category</title>
+{% endblock %}
+
+{% block content %}
+  <div class="title">
+    <h2><a href="{{ blog.get_url }}">{{ blog.title }}</a></h2>
+    <p style='color: gray'>{{ blog.description }}</p>
+    <hr>
+  </div>
+  <h4>Edit Categories:</h4>
+  <br>
+  {{ formset.non_form_errors }}
+  <form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <div>
+      {% if formset.forms %}
+        {% for form in formset.forms %}
+          <p>
+            {{ form.DELETE}}
+            {{ form.name }}
+            {% for error in form.name.errors %}
+              <span style="color: red">{{ error }}</span>
+            {% endfor %}
+          </p>
+        {% endfor %}
+        <button type="submit" name="edit">Edit</button>
+        <button type="submit" name="delete">Delete</button>
+      {% endif %}
+    </div>
+    <div style="margin-top: 20px">
+      <p>Create New:</p>
+      {% for field in form2 %}
+        <p>
+          {{ field }}
+          {% for error in field.errors %}
+              <span style="color: red">{{ error }}</span>
+          {% endfor %}
+        </p>
+      {% endfor %}
+      <button type="submit" name="add">add</button>
+    </div>
+  </form>
+{% endblock %}

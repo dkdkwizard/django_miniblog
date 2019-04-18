@@ -1,4 +1,5 @@
 import os
+import json
 from uuid import uuid4
 
 from django.db import models
@@ -7,20 +8,28 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from ckeditor.fields import RichTextField
+from django.utils.deconstruct import deconstructible
 
 
 # Create your models here.
 class Blog(models.Model):
 
     title = models.CharField(max_length=20, help_text='Blog\'s title')
+    category = models.CharField(max_length=20000, default='[]')  # list of categorys set and load with json
     description = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('Creation Date')
     name_field = models.CharField(max_length=20, help_text='Blog\'s name field', default='')  # to avoid same title blogs
-
+    
     class Meta:
         ordering = ['title']
     
+    def set_category(self, x):
+        self.category = json.dumps(x)
+    
+    def get_category(self):
+        return json.loads(self.category)
+
     def __str__(self):
         return self.title
 
@@ -37,11 +46,12 @@ class Article(models.Model):
     url_name = models.CharField(max_length=50, null=True, blank=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     content = RichTextField(null=True, blank=True)
+    category = models.CharField(max_length=50, default='unclassified')
     creation_time = models.DateTimeField('Creation DateTime')
     last_modify_time = models.DateTimeField('Last Modify DateTime')
     
     class Meta:
-        ordering = ['creation_time']
+        ordering = ['-creation_time']
     
     def get_url(self):
         return reverse('article', args=[
@@ -67,18 +77,21 @@ class Comment(models.Model):
         ordering = ['time']
 
 
-def path_and_rename(path):
-    def wrapper(instance, filename):
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
-        # get filename
-        if instance.user:
-            filename = '{}.{}'.format(instance.user.pk, ext)
+        if instance.pk:
+            filename = '{}.{}'.format(instance.pk, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
 
 
 class Profile(models.Model):
@@ -86,7 +99,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     pen_name = models.CharField(max_length=20)
     bio = models.TextField('Biography', default='')
-    photo = models.ImageField(upload_to=path_and_rename('portrait/'), default='portrait/default.png')
+    photo = models.ImageField(upload_to=PathAndRename('portrait/'), default='portrait/default.png')
 
     def __str__(self):
         return self.user.username

@@ -4,6 +4,16 @@
     list-style: none;
 }
 
+div.sidebar-left{
+    float: right;
+    width: 30%;
+}
+
+div.blog-content{
+    width:70%;
+    float:left;
+}
+
 .imgbox {
     overflow: hidden;
     position: relative;
@@ -16,4 +26,10 @@
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%)
+}
+
+ul.errorlist{
+    color:red;
+    padding: 0;
+    list-style: none;
 }

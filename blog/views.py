@@ -9,7 +9,7 @@ from django.views import generic
 from django.conf import settings
 
 from blog.models import Blog, Article, Comment
-from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm
+from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm, CategoryForm, CategoryFormSet
 
 import datetime
 
@@ -54,7 +54,7 @@ def signup(request):
     return render(request, 'signup.html', context=context)
 
 
-def userpageview(request, id):
+def user_page_view(request, id):
     user = User.objects.get(pk=id)
     profile = user.profile
     blog = user.blog_set
@@ -69,7 +69,7 @@ def userpageview(request, id):
 
 
 @login_required
-def edituserview(request):
+def edit_user_view(request):
     user = request.user
     prof = user.profile
     if request.method == 'POST':
@@ -94,7 +94,7 @@ def edituserview(request):
     return render(request, 'edituser.html', context=context)
 
 
-def allblogview(request):
+def all_blog_view(request):
     blog = Blog.objects.order_by('title')
     context = {'blog': blog}
     return render(request, 'all_blog_list.html', context=context)
@@ -109,16 +109,109 @@ class MyBlogsView(LoginRequiredMixin, generic.ListView):  # view by Django gener
         return Blog.objects.filter(user=self.request.user)
 
 
-def blogview(request, blog):
+def blog_view(request, blog):
     blog = Blog.objects.get(name_field=blog)
+    arti = blog.article_set.all()
+    cat = blog.get_category()
+    cat_num = [0] * len(cat)
+    for i in range(len(cat)):
+        cat_num[i] = arti.filter(category__exact=cat[i]).count()
+    cat = sorted(zip(cat, cat_num))
+    num_unclass = arti.filter(category__exact='unclassified').count()
     context = {
         'blog': blog,
+        'article': arti,
+        'cat': cat,
+        'num_unclass': num_unclass,
     }
 
     return render(request, 'blog.html', context=context)
 
 
-def articleview(request, blog, year, month, day, arti):
+def blog_query_by_category_view(request, blog, cat):
+    blog = Blog.objects.get(name_field=blog)
+    arti_all = blog.article_set.all()
+    arti = blog.article_set.filter(category__exact=cat)
+    
+    cat = blog.get_category()
+    cat_num = [0] * len(cat)
+    for i in range(len(cat)):
+        cat_num[i] = arti_all.filter(category__exact=cat[i]).count()
+    cat = sorted(zip(cat, cat_num))
+    num_unclass = arti_all.filter(category__exact='unclassified').count()
+    context = {
+        'blog': blog,
+        'article': arti,
+        'cat': cat,
+        'num_unclass': num_unclass,
+    }
+
+    return render(request, 'blog.html', context=context)
+
+
+@login_required
+def edit_category_view(request, blog):
+    blog = Blog.objects.get(name_field=blog)
+    cat = blog.get_category()
+    # CategoryFormSet = forms.formset_factory(CategoryForm, formset=BaseCategoryFormSet, max_num=20)
+    if request.user != blog.user:
+        next = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(next)
+    
+    if request.method == 'POST':
+        if 'edit' in request.POST:
+            formset = CategoryFormSet(request.POST)
+            if len(cat) < 20:
+                form2 = CategoryForm()
+            if formset.is_valid():
+                for idx, form in enumerate(formset.forms):
+                    n = form.cleaned_data['name']
+                    if n != cat[idx]:
+                        arti = blog.article_set.filter(category__exact=cat[idx]).update(category=n)
+                        cat[idx] = form.cleaned_data['name']
+                        cat = sorted(cat)
+                        blog.set_category(cat)
+                        blog.save()
+                return HttpResponseRedirect(request.path)
+        if 'delete' in request.POST:
+            formset = CategoryFormSet(request.POST)
+            form2 = CategoryForm(request.POST)
+            if formset.is_valid():
+                for idx, form in enumerate(formset.forms):
+                    if form.cleaned_data['DELETE']:
+                        arti = blog.article_set.filter(category__exact=cat[idx]).update(category='')
+                        del cat[idx]
+                        blog.set_category(cat)
+                        blog.save()
+                return HttpResponseRedirect(request.path)
+        if 'add' in request.POST:
+            formset = CategoryFormSet(initial=[{'name': i} for i in cat])
+            form2 = CategoryForm(request.POST)
+            if form2.is_valid():
+                n = form2.cleaned_data['name']
+                if n in cat:
+                    form2.add_error('name', 'This category already exist.')
+                else:
+                    cat.append(n)
+                    cat = sorted(cat)
+                    blog.set_category(cat)
+                    blog.save()
+                    return HttpResponseRedirect(request.path)
+    else:
+        formset = CategoryFormSet(initial=[{'name': i} for i in cat])
+        if len(cat) < 20:
+            form2 = CategoryForm()
+    context = {
+        'blog': blog,
+        'cat': cat,
+        'formset': formset,
+        'form2': form2,
+    }
+
+    return render(request, 'editcategory.html', context=context)
+    
+
+def article_view(request, blog, year, month, day, arti):
     blog = Blog.objects.get(name_field=blog)
     arti = blog.article_set.get(url_name=arti)
 
@@ -150,7 +243,7 @@ def articleview(request, blog, year, month, day, arti):
 
 
 @login_required
-def createblog(request):
+def create_blog_view(request):
     if request.method == 'POST':
         form = CreateBlogForm(request.POST)
         if form.is_valid():
@@ -170,14 +263,16 @@ def createblog(request):
 
 
 @login_required
-def createarticle(request, blog):
+def create_article_view(request, blog):
     blog = Blog.objects.get(name_field=blog)
+    cat = blog.get_category()
     if request.user != blog.user:
         next = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(next)
     
     if request.method == 'POST':
-        form = CreateArticleForm(request.POST)
+        form = CreateArticleForm(request.POST, cat=cat)
+        form
         if form.is_valid():
             article = Article.objects.create(blog=blog, creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
             article.title = form.cleaned_data.get('title')
@@ -188,6 +283,7 @@ def createarticle(request, blog):
                 article.url_name = article.title
 
             article.content = form.cleaned_data.get('content')
+            article.category = form.cleaned_data.get('cat')
             article.save()
             dt = article.creation_time
             return HttpResponseRedirect(reverse('article', kwargs={
@@ -199,7 +295,7 @@ def createarticle(request, blog):
             }))
 
     else:
-        form = CreateArticleForm()
+        form = CreateArticleForm(cat=cat)
     context = {
         'form': form
     }
@@ -207,17 +303,19 @@ def createarticle(request, blog):
 
 
 @login_required
-def modify_article(request, blog, id):
+def modify_article_view(request, blog, id):
     blog = Blog.objects.get(name_field=blog)
+    cat = blog.get_category()
     if request.user != blog.user:
         next = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(next)
     article = Article.objects.get(pk=id)
     if request.method == 'POST':
-        form = CreateArticleForm(request.POST)
+        form = CreateArticleForm(request.POST, cat=cat)
         if form.is_valid():
             article.title = form.cleaned_data.get('title')
             article.content = form.cleaned_data.get('content')
+            article.category = form.cleaned_data.get('cat')
             article.save()
             dt = article.creation_time
             return HttpResponseRedirect(reverse('article', kwargs={
@@ -230,9 +328,11 @@ def modify_article(request, blog, id):
 
     else:
         form = CreateArticleForm(
+            cat=cat,
             initial={
                 'title': article.title,
                 'content': article.content,
+                'cat': article.category,
             }
         )
 

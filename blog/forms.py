@@ -49,10 +49,46 @@ class CreateBlogForm(forms.ModelForm):
 
 class CreateArticleForm(forms.ModelForm):
     content = RichTextFormField()
+    cat = forms.ChoiceField(choices=[('unclassified', '--')])
+
+    def __init__(self, *args, **kwargs):
+        cat = kwargs.pop('cat', [])
+        super(CreateArticleForm, self).__init__(*args, **kwargs)
+        self.fields['cat'].label = 'Category'
+        self.fields['cat'].choices += [(c, c) for c in cat]
 
     class Meta:
         model = Article
-        fields = ['title', 'content']
+        fields = ['title', 'cat', 'content']
+
+
+class CategoryForm(forms.Form):
+    name = forms.CharField(max_length=20, required=False)
+
+    def clean_name(self):
+        n = self.cleaned_data['name']
+        if n == 'unclassified':
+            raise ValidationError(_('Invalid name.'))
+        if not n:
+            raise ValidationError(_('Can not be Empty'))
+        return n
+
+
+class BaseCategoryFormSet(forms.BaseFormSet):
+    
+    def clean(self):
+        if any(self.errors):
+            return
+        names = {}
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+            name = form.cleaned_data.get('name')
+            if name in names:
+                raise forms.ValidationError('Categories must have different name')
+            names[name] = 1
+
+CategoryFormSet = forms.formset_factory(CategoryForm, formset=BaseCategoryFormSet, max_num=0, can_delete=True)
 
 
 class CommentForm(forms.ModelForm):
