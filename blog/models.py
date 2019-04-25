@@ -115,6 +115,8 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
         
+USING_S3 = os.environ.get('USING_S3', False)
+
 
 # delete photo after profile is deleted
 @receiver(models.signals.post_delete, sender=Profile)
@@ -124,11 +126,15 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     when corresponding `MediaFile` object is deleted.
     """
     if instance.photo != 'portrait/default.png':
-        if os.path.isfile(instance.photo.path):
-            os.remove(instance.photo.path)
+        if USING_S3:
+            instance.photo.delete(save=False)
+        else:
+            if os.path.isfile(instance.photo.path):
+                os.remove(instance.photo.path)
 
 
 # delete photo before save new photo
+
 @receiver(models.signals.pre_save, sender=Profile)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
@@ -138,12 +144,14 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     """
     if not instance.pk:
         return False
-
     old_file = Profile.objects.get(pk=instance.pk).photo
     new_file = instance.photo
-    if old_file != new_file and old_file != 'portrait/default.png':
-        if os.path.isfile(old_file.path):
-            os.remove(old_file.path)
+    if USING_S3:
+        old_file.delete(save=False)
+    else:
+        if old_file != new_file and old_file != 'portrait/default.png':
+            if os.path.isfile(old_file.path):
+                os.remove(old_file.path)
 
 
 # update profile with users
