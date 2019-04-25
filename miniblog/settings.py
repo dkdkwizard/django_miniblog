@@ -136,7 +136,7 @@ STATIC_URL = '/static/'
 # =====for heroku=====
 # The absolute path to the directory where collectstatic will collect static files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
