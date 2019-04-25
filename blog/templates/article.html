@@ -12,41 +12,64 @@
     <p><a href="{{ arti.modify_url }}">Edit</a> <a href="{{ arti.del_url }}">Delete</a></p>
   {% endif %}
   <hr>
-  {{ arti.content|safe }}
-  <hr>
-  <h4>Comments</h4>
-  <br>
-  {% if arti.comment_set.count > 0 %}
-    {% for comt in arti.comment_set.all %}
-      <p>
-        {% if comt.user %}
-          <a href="{% url 'user' id=comt.user.pk %}">{{comt.sign}}:</a>
-        {% else %}
-          {{comt.sign}}:
-        {% endif %}
-        <span style="color: rgb(199, 199, 199);">post at {{comt.time}}</span>
-        {{ comt.content|linebreaks }}
-      </p>
-      
-      <hr>
-    {% endfor %}
-  {% else %}
-    <p>There is no comment yet. Try to be the fisrt?</p>
-  {% endif %}
-  <form method="POST">
-    {% csrf_token %}
-    {% if user.is_authenticated %}
-    <p>Comment as {{ user.profile.pen_name}} (<a href="{% url 'logout' %}?next={{request.path}}">logout</a>)</p>
+  <div class="blog-content">
+    {{ arti.content|safe }}
+    <hr>
+    <h4>Comments</h4>
+    <br>
+    {% if arti.comment_set.count > 0 %}
+      {% for comt in arti.comment_set.all %}
+        <p>
+          {% if comt.user %}
+            <a href="{% url 'user' id=comt.user.pk %}">{{comt.sign}}:</a>
+          {% else %}
+            {{comt.sign}}:
+          {% endif %}
+          <span style="color: rgb(199, 199, 199);">post at {{comt.time}}</span>
+          {{ comt.content|linebreaks }}
+        </p>
+        
+        <hr>
+      {% endfor %}
     {% else %}
-    <p>Comment as a guest or <a href="{% url 'login' %}?next={{request.path}}">login</a></p>
-    <p>{{ form.sign }}</p>
-    {% endif%}
-    <p>
-    {{ form.content }}
-    </p>
-    {% for error in form.content.errors %}
-      <p style="color: red">{{ error }}</p>
-    {% endfor %}
-    <button type="submit">Post Comment</button>
-  </form>
+      <p>There is no comment yet. Try to be the fisrt?</p>
+    {% endif %}
+    <form method="POST">
+      {% csrf_token %}
+      {% if user.is_authenticated %}
+      <p>Comment as {{ user.profile.pen_name}} (<a href="{% url 'logout' %}?next={{request.path}}">logout</a>)</p>
+      {% else %}
+      <p>Comment as a guest or <a href="{% url 'login' %}?next={{request.path}}">login</a></p>
+      <p>{{ form.sign }}</p>
+      {% endif%}
+      <p>
+      {{ form.content }}
+      </p>
+      {% for error in form.content.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+      <button type="submit">Post Comment</button>
+    </form>
+  </div>
+  <div class="sidebar-left">
+      <div class="author">
+        <h4>About Me:</h4>
+        <div class="imgbox" style="width:100px;height:100px;">
+            <a href="{% url 'user' id=arti.blog.user.pk %}"><img src="{{ arti.blog.user.profile.photo.url }}" ></a>
+        </div>
+        <p><a href="{% url 'user' id=arti.blog.user.pk %}">{{ arti.blog.user.profile.pen_name }}</a></p>
+      </div>
+      <div class="category">
+          <h4>Categories:</h4>
+          <ul class="sidebar-nav">
+              {% for c1, c2 in cat %} 
+              <li><a href="{% url 'blog_category_query' blog=arti.blog.name_field cat=c1 %}">{{ c1 }} ({{ c2 }})</a></li>
+              {% endfor %}
+              <li><a href="{% url 'blog_category_query' blog=arti.blog.name_field cat='unclassified' %}">unclassified({{ num_unclass }})</a></li>
+          </ul>
+          {% if user == arti.blog.user %}
+            <a href="{% url 'editcategory' blog=arti.blog.name_field%}">edit category</a>
+          {% endif %}
+      </div>
+    </div>
 {% endblock %}

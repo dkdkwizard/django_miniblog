@@ -16,10 +16,10 @@ import datetime
 
 # Create your views here.
 def index(request):
-    num_blogs = Blog.objects.count()
-    print(settings.STATIC_ROOT)
+    new_arti = Article.objects.order_by('-creation_time')[:5]
+    print(new_arti)
     context = {
-        'num_blogs': num_blogs,
+        'new_arti': new_arti,
     }
     for key, item in request.session.items():
         print(key, item)
@@ -219,10 +219,17 @@ def edit_category_view(request, blog):
 
 def article_view(request, blog, year, month, day, arti):
     blog = Blog.objects.get(name_field=blog)
+    arti_all = blog.article_set.all()
     arti = blog.article_set.filter(
         creation_time__year=year,
         creation_time__month=month,
         creation_time__day=day).get(url_name=arti)
+    cat = blog.get_category()
+    cat_num = [0] * len(cat)
+    for i in range(len(cat)):
+        cat_num[i] = arti_all.filter(category__exact=cat[i]).count()
+    cat = sorted(zip(cat, cat_num))
+    num_unclass = arti_all.filter(category__exact='unclassified').count()
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -246,6 +253,8 @@ def article_view(request, blog, year, month, day, arti):
     context = {
         'arti': arti,
         'form': form,
+        'cat': cat,
+        'num_unclass': num_unclass,
     }
 
     return render(request, 'article.html', context=context)

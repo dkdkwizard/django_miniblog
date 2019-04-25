@@ -37,7 +37,9 @@
             {% endfor %}
             <li><a href="{% url 'blog_category_query' blog=blog.name_field cat='unclassified' %}">unclassified({{ num_unclass }})</a></li>
         </ul>
-        <a href="{% url 'editcategory' blog=blog.name_field%}">edit category</a>
+        {% if user == blog.user %}
+          <a href="{% url 'editcategory' blog=blog.name_field%}">edit category</a>
+        {% endif %}
     </div>
   </div>
 {% endblock %}

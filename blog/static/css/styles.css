@@ -4,6 +4,10 @@
     list-style: none;
 }
 
+textarea {
+    resize: none;
+}
+
 div.sidebar-left{
     float: right;
     width: 30%;

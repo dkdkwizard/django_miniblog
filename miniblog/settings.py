@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import django
+import ckeditor
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%d(fbh-rzi_taksh9pgod8#n2&$%1#jgq&++1y_pn1j%#53b-t'
+# SECRET_KEY = '%d(fbh-rzi_taksh9pgod8#n2&$%1#jgq&++1y_pn1j%#53b-t'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '%d(fbh-rzi_taksh9pgod8#n2&$%1#jgq&++1y_pn1j%#53b-t')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,6 +128,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

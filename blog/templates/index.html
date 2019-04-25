@@ -12,8 +12,8 @@
   <ul>
   </ul>
   <h2>What's New?</h2>
-  <p>Blogs with newest posts:</p>
-  <ul>
-  </ul>
-  <p>blogs: {{ num_blogs }}</p>
+  {% for arti in new_arti %}
+    <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
+    <p><a href="{% url 'user' id=arti.blog.user.pk %}">{{ arti.blog.user.profile.pen_name }}</a> <span style="color: rgb(199, 199, 199)"> {{ arti.creation_time }} </span></p>
+  {% endfor %}
 {% endblock %}
