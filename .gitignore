@@ -111,3 +111,6 @@ venv.bak/
 
 # Database
 *.sqlite3
+
+# medat
+/media

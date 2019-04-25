@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextFormField
+from ckeditor_uploader.fields import RichTextUploadingFormField
 
 from blog.models import Blog, Article, Comment
 
@@ -48,7 +49,7 @@ class CreateBlogForm(forms.ModelForm):
 
 
 class CreateArticleForm(forms.ModelForm):
-    content = RichTextFormField()
+    content = RichTextUploadingFormField()
     cat = forms.ChoiceField(choices=[('unclassified', '--')])
 
     def __init__(self, *args, **kwargs):

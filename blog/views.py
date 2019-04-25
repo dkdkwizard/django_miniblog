@@ -219,7 +219,10 @@ def edit_category_view(request, blog):
 
 def article_view(request, blog, year, month, day, arti):
     blog = Blog.objects.get(name_field=blog)
-    arti = blog.article_set.get(url_name=arti)
+    arti = blog.article_set.filter(
+        creation_time__year=year,
+        creation_time__month=month,
+        creation_time__day=day).get(url_name=arti)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -246,6 +249,16 @@ def article_view(request, blog, year, month, day, arti):
     }
 
     return render(request, 'article.html', context=context)
+
+
+def delete_article_view(request, blog, year, month, day, arti):
+    blog = Blog.objects.get(name_field=blog)
+    arti = blog.article_set.filter(
+        creation_time__year=year,
+        creation_time__month=month,
+        creation_time__day=day).get(url_name=arti)
+    arti.delete()
+    return HttpResponseRedirect(reverse('blog', args=[blog.name_field]))
 
 
 @login_required

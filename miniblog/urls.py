@@ -18,6 +18,8 @@ from django.urls import path, include, re_path
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from ckeditor_uploader import views as uploader_views
+from django.views.decorators.cache import never_cache
 
 import blog
 
@@ -27,6 +29,9 @@ urlpatterns = [
     path('accounts/signup', blog.views.signup, name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', RedirectView.as_view(url='blog/', permanent=False)),
+    # path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ckeditor/upload/', uploader_views.upload, name='ckeditor_upload'),
+    path('ckeditor/browse/', never_cache(uploader_views.browse), name='ckeditor_browse'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

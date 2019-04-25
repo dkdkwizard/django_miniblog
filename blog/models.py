@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils.deconstruct import deconstructible
 
 
@@ -45,7 +46,7 @@ class Article(models.Model):
     title = models.CharField(max_length=50, help_text='Article\'s title')
     url_name = models.CharField(max_length=50, null=True, blank=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
-    content = RichTextField(null=True, blank=True)
+    content = RichTextUploadingField(null=True, blank=True)
     category = models.CharField(max_length=50, default='unclassified')
     creation_time = models.DateTimeField('Creation DateTime')
     last_modify_time = models.DateTimeField('Last Modify DateTime')
@@ -62,6 +63,15 @@ class Article(models.Model):
             self.url_name,
         ])
     
+    def del_url(self):
+        return reverse('del_article', args=[
+            self.blog.name_field,
+            self.creation_time.year,
+            self.creation_time.month,
+            self.creation_time.day,
+            self.url_name,
+        ])
+
     def modify_url(self):
         return reverse('modify_article', args=[self.blog.name_field, self.id])
 
