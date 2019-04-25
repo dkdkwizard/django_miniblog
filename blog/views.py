@@ -17,12 +17,9 @@ import datetime
 # Create your views here.
 def index(request):
     new_arti = Article.objects.order_by('-creation_time')[:5]
-    print(new_arti)
     context = {
         'new_arti': new_arti,
     }
-    for key, item in request.session.items():
-        print(key, item)
     return render(request, 'index.html', context=context)
 
 
