@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '%d(fbh-rzi_taksh9pgod8#n2&$%1#
 # DEBUG = True
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['https://miniblog-72415.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['miniblog-72415.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
