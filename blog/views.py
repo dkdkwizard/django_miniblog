@@ -112,8 +112,7 @@ class MyBlogsView(LoginRequiredMixin, generic.ListView):  # view by Django gener
         return Blog.objects.filter(user=self.request.user)
 
 
-def blog_view(request, blog):
-    blog = get_object_or_404(Blog, name_field=blog)
+def add_visit_number(request, blog):
     # calculate visit counts
     try:
         visit_by_date = blog.visitbydate.get(date=datetime.date.today())
@@ -148,6 +147,12 @@ def blog_view(request, blog):
         if visit_by_date:
             visit_by_date.save()
         blog.save()
+    return visit_by_date
+
+
+def blog_view(request, blog):
+    blog = get_object_or_404(Blog, name_field=blog)
+    visit_by_date = add_visit_number(request, blog)
     arti = blog.article_set.all()
     cat = blog.get_category()
     cat_num = [0] * len(cat)
@@ -168,7 +173,7 @@ def blog_view(request, blog):
 
 def blog_query_by_category_view(request, blog, cat):
     blog = get_object_or_404(Blog, name_field=blog)
-    
+    visit_by_date = add_visit_number(request, blog)
     arti_all = blog.article_set.all()
     arti = blog.article_set.filter(category__exact=cat)
     
@@ -252,6 +257,7 @@ def edit_category_view(request, blog):
 
 def article_view(request, blog, year, month, day, arti):
     blog = get_object_or_404(Blog, name_field=blog)
+    visit_by_date = add_visit_number(request, blog)
     arti_all = blog.article_set.all()
     arti = get_object_or_404(blog.article_set.filter(
         creation_time__year=year,
