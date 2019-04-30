@@ -127,8 +127,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     if instance.photo != 'portrait/default.png':
         if USING_S3:
-            print('0', instance.photo)
-            # instance.photo.delete(save=False)
+            instance.photo.delete(save=False)
         else:
             if os.path.isfile(instance.photo.path):
                 os.remove(instance.photo.path)
@@ -148,12 +147,8 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     old_file = Profile.objects.get(pk=instance.pk).photo
     new_file = instance.photo
     if USING_S3:
-        print('1', old_file)
         if old_file != 'portrait/default.png':
-            print('yes')
-        else:
-            print('no')
-        # old_file.delete(save=False)
+            old_file.delete(save=False)
     else:
         if old_file != new_file and old_file != 'portrait/default.png':
             if os.path.isfile(old_file.path):
