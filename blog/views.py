@@ -75,7 +75,7 @@ def user_page_view(request, id):
 def edit_user_view(request):
     user = request.user
     prof = user.profile
-    print(user.prof.photo)
+    print(prof.photo)
     if request.method == 'POST':
         form = EditUserForm(request.POST, request.FILES)
         if form.is_valid():
