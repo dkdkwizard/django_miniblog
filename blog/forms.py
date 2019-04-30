@@ -10,11 +10,11 @@ from blog.models import Blog, Article, Comment
 
 
 class SignUpForm(UserCreationForm):
-    photo = forms.ImageField(required=False)
-    pen_name = forms.CharField(label='暱稱:', max_length=20, help_text='必填.')
+    photo = forms.ImageField(label='大頭貼照', required=False)
+    pen_name = forms.CharField(label='暱稱', max_length=20, help_text='必填.')
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
-    }), help_text='About you.', label='自我介紹')
+    }), help_text='關於你.', label='自我介紹')
 
     class Meta:
         model = User
@@ -22,11 +22,11 @@ class SignUpForm(UserCreationForm):
 
 
 class EditUserForm(forms.Form):
-    photo = forms.ImageField(required=False)
-    pen_name = forms.CharField(max_length=20, help_text='Required. Your pen name.')
+    photo = forms.ImageField(label='大頭貼照', required=False)
+    pen_name = forms.CharField(label='暱稱', max_length=20, help_text='必填.')
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
-    }), help_text='About you.')
+    }), help_text='關於你.', label='自我介紹')
 
     class Meta:
         model = User
