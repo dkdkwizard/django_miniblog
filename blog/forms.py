@@ -40,12 +40,17 @@ class CreateBlogForm(forms.ModelForm):
         # check if name field used
         n = Blog.objects.filter(name_field=nf).count()
         if n > 0:
-            raise ValidationError(_('Name Field Used'))
+            raise ValidationError(_('此網域已有人使用'))
         return nf
 
     class Meta:
         model = Blog
         fields = ['title', 'name_field', 'description']
+        labels = {
+            'title': '部落格標題',
+            'name_field': '部落格網域名',
+            'description': '部落格簡介',
+        }
 
 
 class CreateArticleForm(forms.ModelForm):
@@ -55,12 +60,16 @@ class CreateArticleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         cat = kwargs.pop('cat', [])
         super(CreateArticleForm, self).__init__(*args, **kwargs)
-        self.fields['cat'].label = 'Category'
+        self.fields['cat'].label = '分類'
         self.fields['cat'].choices += [(c, c) for c in cat]
 
     class Meta:
         model = Article
         fields = ['title', 'cat', 'content']
+        labels = {
+            'title': '文章標題',
+            'content': '內文',
+        }
 
 
 class CategoryForm(forms.Form):
@@ -69,9 +78,9 @@ class CategoryForm(forms.Form):
     def clean_name(self):
         n = self.cleaned_data['name']
         if n == 'unclassified':
-            raise ValidationError(_('Invalid name.'))
+            raise ValidationError(_('不可使用之分類名'))
         if not n:
-            raise ValidationError(_('Can not be Empty'))
+            raise ValidationError(_('不可為空白'))
         return n
 
 
@@ -94,11 +103,11 @@ CategoryFormSet = forms.formset_factory(CategoryForm, formset=BaseCategoryFormSe
 
 class CommentForm(forms.ModelForm):
     sign = forms.CharField(required=False, widget=forms.TextInput(attrs={
-        'placeholder': 'Your Nickname',
+        'placeholder': '署名',
         'style': ' width: 60%;'
     }))
     content = forms.CharField(widget=forms.Textarea(attrs={
-        'placeholder': 'Leave your comment here',
+        'placeholder': '你的留言',
         'style': ' width: 60%; resize:None;',
     }))
 
