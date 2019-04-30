@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>Blog - Create Blog</title>
+<title>創建部落格</title>
 {% endblock %}
 
 {% block content %}
-  <h2>Create Blog</h2>
+  <h2>創建部落格</h2>
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -20,6 +20,6 @@
         {% endfor %}
       </p>
     {% endfor %}
-    <button type="submit">Create</button>
+    <button type="submit">建立</button>
   </form>
 {% endblock %}

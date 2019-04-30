@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>{{ blog.title }} - edit category</title>
+<title>{{ blog.title }} - 編輯分類</title>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
     <p style='color: gray'>{{ blog.description }}</p>
     <hr>
   </div>
-  <h4>Edit Categories:</h4>
+  <h4>編輯分類 :</h4>
   <br>
   {{ formset.non_form_errors }}
   <form method="post">
@@ -27,12 +27,12 @@
             {% endfor %}
           </p>
         {% endfor %}
-        <button type="submit" name="edit">Edit</button>
-        <button type="submit" name="delete">Delete</button>
+        <button type="submit" name="edit">編輯</button>
+        <button type="submit" name="delete">刪除</button>
       {% endif %}
     </div>
     <div style="margin-top: 20px">
-      <p>Create New:</p>
+      <p>新分類:</p>
       {% for field in form2 %}
         <p>
           {{ field }}
@@ -41,7 +41,7 @@
           {% endfor %}
         </p>
       {% endfor %}
-      <button type="submit" name="add">add</button>
+      <button type="submit" name="add">新增</button>
     </div>
   </form>
 {% endblock %}

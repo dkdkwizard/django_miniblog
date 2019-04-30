@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>Create Article</title>
+<title>編輯文章</title>
 {% endblock %}
 
 {% block content %}
-  <h2>Modify Article</h2>
+  <h2>編輯文章</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.media }}
@@ -21,6 +21,6 @@
         {% endfor %}
       </p>
     {% endfor %}
-    <button type="submit">Change</button>
+    <button type="submit">編輯</button>
   </form>
 {% endblock %}

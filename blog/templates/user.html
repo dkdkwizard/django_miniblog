@@ -12,15 +12,15 @@
   {% if user == that_user %}
   <form method="post">
     {% csrf_token %}
-    <button type="submit" name="remove">Remove</button>
+    <button type="submit" name="remove">移除</button>
   </form>
-  <p><a href="{% url 'edituser' %}">edit profile</a></p>
+  <p><a href="{% url 'edituser' %}">編集個人資料</a></p>
   {% endif %}
   <hr>
-  <h4>Bio:</h4>
+  <h4>自我介紹 :</h4>
   <p>{{ that_user.profile.bio }}</p>
   <br>
-  <h4>Blogs: </h4>
+  <h4>部落格: </h4>
   <br>
   {% if blog.count > 0 %}
     {% for b in blog.all %}
@@ -28,6 +28,6 @@
       <p>{{ b.description }}</p>
     {% endfor %}
   {% else %}
-      <p>This user does not have any blog yet.</p>
+      <p>此使用者目前沒有任何部落格.</p>
   {% endif %}
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title> Edit profile </title>
+<title> 編輯個人資料 </title>
 {% endblock %}
 
 {% block content %}
-  <h2>Profile</h2>
+  <h2>個人資料</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form %}
@@ -25,6 +25,6 @@
         {% endfor %}
       </p>
     {% endfor %}
-    <button type="submit">Edit</button>
+    <button type="submit">編輯</button>
   </form>
 {% endblock %}

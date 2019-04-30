@@ -15,29 +15,22 @@
       <div class="col-sm-2">
       {% block sidebar %}
         <ul class="sidebar-nav">
-          <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="{% url 'allblog'%}">All blogs</a></li>
+          <li><a href="{% url 'index' %}">首頁</a></li>
+          <li><a href="{% url 'allblog'%}">所有部落格</a></li>
         </ul>
         <ul class="sidebar-nav">
           {% if user.is_authenticated %}
-            <p>Hi, {{ user.profile.pen_name }}</p>
+            <p>哈囉, {{ user.profile.pen_name }}</p>
             <div class="imgbox" style="width:100px;height:100px;">
               <img src="{{ user.profile.photo.url }}" >
             </div>
-            <li><a href="{% url 'user' id=user.pk %}">My Profile</a></li>
-            <li><a href="{% url 'myblog' %}">My Blogs</a></li>
-            <li><a href="{% url 'createblog' %}">Create New Blog</a></li>
-            <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a></li>   
+            <li><a href="{% url 'user' id=user.pk %}">個人資料</a></li>
+            <li><a href="{% url 'myblog' %}">部落格</a></li>
+            <li><a href="{% url 'createblog' %}">創建部落格</a></li>
+            <li><a href="{% url 'logout' %}?next={{request.path}}">登出</a></li>   
           {% else %}
-            <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
-            <li><a href="{% url 'signup' %}">Sign Up</a></li>   
-          {% endif %} 
-        </ul>
-        
-        <ul class="sidebar-nav">
-          {% if perms.catalog.can_mark_returned %}
-          <hr />
-          <li><a href="">all borrowed</a></li>
+            <li><a href="{% url 'login' %}?next={{request.path}}">登入</a></li>
+            <li><a href="{% url 'signup' %}">註冊</a></li>   
           {% endif %} 
         </ul>
       {% endblock %}

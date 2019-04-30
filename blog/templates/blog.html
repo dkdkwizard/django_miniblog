@@ -13,32 +13,32 @@
   <div class="blog-content">
     {% for arti in article %}
     <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
-    <h6 style="color: rgb(199, 199, 199)">Post at {{ arti.creation_time }}{% if arti.creation_time != arti.last_modify_time %}, last modify: {{ arti.last_modify_time }}{% endif %}</h6>
+    <h6 style="color: rgb(199, 199, 199)">發表於: {{ arti.creation_time }}</h6>
     {{ arti.content|safe }}
     <hr>
     {% endfor %}
     {% if user == blog.user %}
-    <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ new article</a></p>
+    <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ 發表新文章</a></p>
     {% endif %}
   </div>
   <div class="sidebar-left">
     <div class="author">
-      <h4>About Me:</h4>
+      <h4>關於我 :</h4>
       <div class="imgbox" style="width:100px;height:100px;">
           <a href="{% url 'user' id=blog.user.pk %}"><img src="{{ blog.user.profile.photo.url }}" ></a>
       </div>
       <p><a href="{% url 'user' id=blog.user.pk %}">{{ blog.user.profile.pen_name }}</a></p>
     </div>
     <div class="category">
-        <h4>Categories:</h4>
+        <h4>分類 :</h4>
         <ul class="sidebar-nav">
             {% for c1, c2 in cat %} 
             <li><a href="{% url 'blog_category_query' blog=blog.name_field cat=c1 %}">{{ c1 }} ({{ c2 }})</a></li>
             {% endfor %}
-            <li><a href="{% url 'blog_category_query' blog=blog.name_field cat='unclassified' %}">unclassified({{ num_unclass }})</a></li>
+            <li><a href="{% url 'blog_category_query' blog=blog.name_field cat='unclassified' %}">未分類文章({{ num_unclass }})</a></li>
         </ul>
         {% if user == blog.user %}
-          <a href="{% url 'editcategory' blog=blog.name_field%}">edit category</a>
+          <a href="{% url 'editcategory' blog=blog.name_field%}">編輯分類</a>
         {% endif %}
     </div>
   </div>

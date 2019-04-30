@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>My blogs</title>
+<title>我的部落格</title>
 {% endblock %}
 
 {% block content %}
-  <h2>My Blogs</h2>
+  <h2>我的部落格</h2>
   <hr>
   {% if blog_list %}
     {% for b in blog_list %}
@@ -13,6 +13,6 @@
       <p>{{ b.description }}</p>
     {% endfor %}
   {% else %}
-    <p>You don't have any blog yet. <a href="{% url 'createblog' %}">Create One?</a></p>
+    <p>你尚未擁有任何部落格. <a href="{% url 'createblog' %}">創建一個?</a></p>
   {% endif %}
 {% endblock %}
