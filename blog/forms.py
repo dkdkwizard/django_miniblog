@@ -11,10 +11,10 @@ from blog.models import Blog, Article, Comment
 
 class SignUpForm(UserCreationForm):
     photo = forms.ImageField(required=False)
-    pen_name = forms.CharField(max_length=20, help_text='Required. Your pen name.')
+    pen_name = forms.CharField(label='暱稱:', max_length=20, help_text='必填.')
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
-    }), help_text='About you.')
+    }), help_text='About you.', label='自我介紹')
 
     class Meta:
         model = User
