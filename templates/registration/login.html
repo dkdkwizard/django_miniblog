@@ -8,10 +8,9 @@
 
 {% if next %}
   {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
+    <p>你的帳號未擁有此權限. 請以有此權限之帳號登入.</p>
   {% else %}
-    <p>Please login to see this page.</p>
+    <p>請登入以瀏覽此頁面.</p>
   {% endif %}
 {% endif %}
 
@@ -20,21 +19,21 @@
 <table>
 
 <tr>
-  <td>{{ form.username.label_tag }}</td>
+  <td>使用者帳號</td>
   <td>{{ form.username }}</td>
 </tr>
 
 <tr>
-  <td>{{ form.password.label_tag }}</td>
+  <td>密碼</td>
   <td>{{ form.password }}</td>
 </tr>
 </table>
 
-<input type="submit" value="login" />
+<input type="submit" value="登入" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+<p><a href="{% url 'password_reset' %}">忘記密碼?</a></p>
 
 {% endblock %}
