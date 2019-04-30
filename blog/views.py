@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -52,7 +52,7 @@ def signup(request):
 
 
 def user_page_view(request, id):
-    user = User.objects.get(pk=id)
+    user = get_object_or_404(User, pk=id)
     profile = user.profile
     blog = user.blog_set
     comment = user.comment_set
@@ -113,7 +113,7 @@ class MyBlogsView(LoginRequiredMixin, generic.ListView):  # view by Django gener
 
 
 def blog_view(request, blog):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     arti = blog.article_set.all()
     cat = blog.get_category()
     cat_num = [0] * len(cat)
@@ -132,7 +132,7 @@ def blog_view(request, blog):
 
 
 def blog_query_by_category_view(request, blog, cat):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     arti_all = blog.article_set.all()
     arti = blog.article_set.filter(category__exact=cat)
     
@@ -154,7 +154,7 @@ def blog_query_by_category_view(request, blog, cat):
 
 @login_required
 def edit_category_view(request, blog):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     cat = blog.get_category()
     # CategoryFormSet = forms.formset_factory(CategoryForm, formset=BaseCategoryFormSet, max_num=20)
     if request.user != blog.user:
@@ -215,12 +215,14 @@ def edit_category_view(request, blog):
     
 
 def article_view(request, blog, year, month, day, arti):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     arti_all = blog.article_set.all()
-    arti = blog.article_set.filter(
+    arti = get_object_or_404(blog.article_set.filter(
         creation_time__year=year,
         creation_time__month=month,
-        creation_time__day=day).get(url_name=arti)
+        creation_time__day=day),
+        url_name=arti
+    )
     cat = blog.get_category()
     cat_num = [0] * len(cat)
     for i in range(len(cat)):
@@ -258,11 +260,13 @@ def article_view(request, blog, year, month, day, arti):
 
 
 def delete_article_view(request, blog, year, month, day, arti):
-    blog = Blog.objects.get(name_field=blog)
-    arti = blog.article_set.filter(
+    blog = get_object_or_404(Blog, name_field=blog)
+    arti = get_object_or_404(blog.article_set.filter(
         creation_time__year=year,
         creation_time__month=month,
-        creation_time__day=day).get(url_name=arti)
+        creation_time__day=day),
+        url_name=arti
+    )
     arti.delete()
     return HttpResponseRedirect(reverse('blog', args=[blog.name_field]))
 
@@ -289,7 +293,7 @@ def create_blog_view(request):
 
 @login_required
 def create_article_view(request, blog):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     cat = blog.get_category()
     if request.user != blog.user:
         next = request.META.get('HTTP_REFERER', '/')
@@ -329,12 +333,12 @@ def create_article_view(request, blog):
 
 @login_required
 def modify_article_view(request, blog, id):
-    blog = Blog.objects.get(name_field=blog)
+    blog = get_object_or_404(Blog, name_field=blog)
     cat = blog.get_category()
     if request.user != blog.user:
         next = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(next)
-    article = Article.objects.get(pk=id)
+    article = get_object_or_404(Article, pk=id)
     if request.method == 'POST':
         form = CreateArticleForm(request.POST, cat=cat)
         if form.is_valid():
