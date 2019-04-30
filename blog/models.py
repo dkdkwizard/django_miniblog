@@ -125,6 +125,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     Deletes file from filesystem
     when corresponding `MediaFile` object is deleted.
     """
+    print(instance.photo)
     if instance.photo != 'portrait/default.png':
         if USING_S3:
             instance.photo.delete(save=False)
