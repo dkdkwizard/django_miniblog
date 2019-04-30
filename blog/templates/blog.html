@@ -41,5 +41,9 @@
           <a href="{% url 'editcategory' blog=blog.name_field%}">編輯分類</a>
         {% endif %}
     </div>
+    <div>
+      <p>本日人氣: {% if visit_by_date %}{{ visit_by_date.num_visit }}{% else %}0{% endif %}</p>
+      <p>累積人氣: {{ blog.total_visit }}</p>
+    </div>
   </div>
 {% endblock %}

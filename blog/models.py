@@ -2,14 +2,16 @@ import os
 import json
 from uuid import uuid4
 
-from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.deconstruct import deconstructible
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
-from django.utils.deconstruct import deconstructible
 
 
 # Create your models here.
@@ -21,7 +23,9 @@ class Blog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('Creation Date')
     name_field = models.CharField(max_length=20, help_text='Blog\'s name field', default='')  # to avoid same title blogs
-    
+    total_visit = models.PositiveIntegerField(default=0)
+    visitbydate = GenericRelation('VisitByDate')
+
     class Meta:
         ordering = ['title']
     
@@ -50,6 +54,8 @@ class Article(models.Model):
     category = models.CharField(max_length=50, default='unclassified')
     creation_time = models.DateTimeField('Creation DateTime')
     last_modify_time = models.DateTimeField('Last Modify DateTime')
+    total_visit = models.PositiveIntegerField(default=0)
+    visitbydate = GenericRelation('VisitByDate')
     
     class Meta:
         ordering = ['-creation_time']
@@ -85,6 +91,14 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['time']
+
+
+class VisitByDate(models.Model):
+    num_visit = models.PositiveIntegerField(default=0)
+    date = models.DateField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
 
 
 @deconstructible
