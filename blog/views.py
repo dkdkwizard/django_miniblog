@@ -383,6 +383,7 @@ def modify_article_view(request, blog, id):
         )
 
     context = {
-        'form': form
+        'arti': arti,
+        'form': form,
     }
     return render(request, 'modifyarticle.html', context=context)

@@ -54,7 +54,7 @@ class CreateBlogForm(forms.ModelForm):
 
 
 class CreateArticleForm(forms.ModelForm):
-    content = RichTextUploadingFormField()
+    content = RichTextUploadingFormField(label='內文')
     cat = forms.ChoiceField(choices=[('unclassified', '--')])
 
     def __init__(self, *args, **kwargs):
