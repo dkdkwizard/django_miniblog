@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.db.models import Avg, Count, Min, Sum
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -10,15 +11,20 @@ from django.conf import settings
 
 from blog.models import Blog, Article, Comment, VisitByDate
 from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm, CategoryForm, CategoryFormSet
+from blog.utils import add_visit_number, n_day_hot
 
 import datetime
 
 
 # Create your views here.
 def index(request):
-    new_arti = Article.objects.order_by('-creation_time')[:5]
+    new_arti = Article.objects.order_by('-creation_time')[:3]
+    hot_blogs = n_day_hot(7, Blog)[:3]
+    hot_artis = n_day_hot(7, Article)[:3]
     context = {
         'new_arti': new_arti,
+        'hot_blogs': hot_blogs,
+        'hot_artis': hot_artis,
     }
     return render(request, 'index.html', context=context)
 
@@ -112,44 +118,6 @@ class MyBlogsView(LoginRequiredMixin, generic.ListView):  # view by Django gener
         return Blog.objects.filter(user=self.request.user)
 
 
-def add_visit_number(request, blog):
-    # calculate visit counts
-    try:
-        visit_by_date = blog.visitbydate.get(date=datetime.date.today())
-    except VisitByDate.DoesNotExist:
-        visit_by_date = None
-    if request.user != blog.user:
-        visited_blog = request.session.get('visited_blog', None)
-        print(visited_blog)
-        if not visited_blog or str(blog.pk) not in visited_blog:  # haven't visit any blog or haven't visit this blog
-            if not visited_blog:
-                request.session['visited_blog'] = {blog.pk: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-            else:
-                visited_blog[str(blog.pk)] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            if visit_by_date:  # whether this blog haven't been visited today or not
-                visit_by_date.num_visit += 1
-            else:
-                blog.visitbydate.create(num_visit=1, date=datetime.date.today())
-                visit_by_date = blog.visitbydate.get(date=datetime.date.today())
-            blog.total_visit += 1
-    
-        else:
-            dt = datetime.datetime.now() - datetime.datetime.strptime(visited_blog[str(blog.pk)], "%Y-%m-%d %H:%M:%S")
-            if dt.total_seconds() > 3600:  # larger than 1 hour
-                visited_blog[str(blog.pk)] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                if visit_by_date:  # whether this blog haven't been visited today or not
-                    visit_by_date.num_visit += 1
-                else:
-                    blog.visitbydate.create(num_visit=1, date=datetime.date.today())
-                    visit_by_date = blog.visitbydate.get(date=datetime.date.today())
-                blog.total_visit += 1
-        request.session.modified = True
-        if visit_by_date:
-            visit_by_date.save()
-        blog.save()
-    return visit_by_date
-
-
 def blog_view(request, blog):
     blog = get_object_or_404(Blog, name_field=blog)
     visit_by_date = add_visit_number(request, blog)
@@ -188,6 +156,7 @@ def blog_query_by_category_view(request, blog, cat):
         'article': arti,
         'cat': cat,
         'num_unclass': num_unclass,
+        'visit_by_date': visit_by_date,
     }
 
     return render(request, 'blog.html', context=context)
@@ -257,14 +226,17 @@ def edit_category_view(request, blog):
 
 def article_view(request, blog, year, month, day, arti):
     blog = get_object_or_404(Blog, name_field=blog)
-    visit_by_date = add_visit_number(request, blog)
+    visit_by_date_blog = add_visit_number(request, blog)
     arti_all = blog.article_set.all()
-    arti = get_object_or_404(blog.article_set.filter(
+    arti = get_object_or_404(arti_all.filter(
         creation_time__year=year,
         creation_time__month=month,
         creation_time__day=day),
         url_name=arti
     )
+    visit_by_date_arti = add_visit_number(request, arti)
+    last_arti_cat = arti_all.filter(category__exact=arti.category, creation_time__lt=arti.creation_time).first()
+    next_arti_cat = arti_all.filter(category__exact=arti.category, creation_time__gt=arti.creation_time).last()
     cat = blog.get_category()
     cat_num = [0] * len(cat)
     for i in range(len(cat)):
@@ -296,6 +268,9 @@ def article_view(request, blog, year, month, day, arti):
         'form': form,
         'cat': cat,
         'num_unclass': num_unclass,
+        'last_arti_cat': last_arti_cat,
+        'next_arti_cat': next_arti_cat,
+        'visit_by_date_blog': visit_by_date_blog,
     }
 
     return render(request, 'article.html', context=context)

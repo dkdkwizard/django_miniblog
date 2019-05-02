@@ -15,41 +15,57 @@
   <div class="blog-content">
     {{ arti.content|safe }}
     <hr>
-    <h4>回覆：</h4>
-    <br>
-    {% if arti.comment_set.count > 0 %}
-      {% for comt in arti.comment_set.all %}
-        <p>
-          {% if comt.user %}
-            <a href="{% url 'user' id=comt.user.pk %}">{{comt.sign}}:</a>
-          {% else %}
-            {{comt.sign}}:
-          {% endif %}
-          <span style="color: rgb(199, 199, 199);">發表於: {{comt.time}}</span>
-          {{ comt.content|linebreaks }}
-        </p>
-        
-        <hr>
-      {% endfor %}
-    {% else %}
-      <p>目前沒有任何回覆. 發表第一則回覆?</p>
-    {% endif %}
-    <form method="POST">
-      {% csrf_token %}
-      {% if user.is_authenticated %}
-      <p>以 {{ user.profile.pen_name}} 留言(<a href="{% url 'logout' %}?next={{request.path}}">登出</a>)</p>
+    <p>
+      文章分類: <a href="{% url 'blog_category_query' blog=arti.blog.name_field cat=arti.category %}">
+        {% if arti.category != "unclassified" %} {{ arti.category }}
+        {% else %} 未分類文章
+        {% endif %}
+      </a>
+    </p>
+    <div class="last_next_article">
+      <div class="last_article">
+        <p>{% if last_arti_cat %}此分類上一篇文章: <a href="{{ last_arti_cat.get_url }}">{{ last_arti_cat.title }}</a>{% endif %}</p>
+      </div>
+      <div class="next_article">
+        <p>{% if next_arti_cat %}此分類下一篇文章: <a href="{{ next_arti_cat.get_url }}">{{ next_arti_cat.title }}</a>{% endif %}</p>
+      </div>
+    </div>
+    <div class="comment">
+      <h4>回覆：</h4>
+      <br>
+      {% if arti.comment_set.count > 0 %}
+        {% for comt in arti.comment_set.all %}
+          <p>
+            {% if comt.user %}
+              <a href="{% url 'user' id=comt.user.pk %}">{{comt.sign}}:</a>
+            {% else %}
+              {{comt.sign}}:
+            {% endif %}
+            <span style="color: rgb(199, 199, 199);">發表於: {{comt.time}}</span>
+            {{ comt.content|linebreaks }}
+          </p>
+          <hr>
+        {% endfor %}
       {% else %}
-      <p>以訪客身分留言 或是 <a href="{% url 'login' %}?next={{request.path}}">登入</a></p>
-      <p>{{ form.sign }}</p>
-      {% endif%}
-      <p>
-      {{ form.content }}
-      </p>
-      {% for error in form.content.errors %}
-        <p style="color: red">{{ error }}</p>
-      {% endfor %}
-      <button type="submit">回覆</button>
-    </form>
+      <p>目前沒有任何回覆. 發表第一則回覆?</p>
+      {% endif %}
+      <form method="POST">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+        <p>以 {{ user.profile.pen_name}} 留言(<a href="{% url 'logout' %}?next={{request.path}}">登出</a>)</p>
+        {% else %}
+        <p>以訪客身分留言 或是 <a href="{% url 'login' %}?next={{request.path}}">登入</a></p>
+        <p>{{ form.sign }}</p>
+        {% endif%}
+        <p>
+        {{ form.content }}
+        </p>
+        {% for error in form.content.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        <button type="submit">回覆</button>
+      </form>
+    </div>
   </div>
   <div class="sidebar-left">
       <div class="author">
@@ -70,6 +86,10 @@
           {% if user == arti.blog.user %}
             <a href="{% url 'editcategory' blog=arti.blog.name_field%}">編輯分類</a>
           {% endif %}
+      </div>
+      <div>
+          <p>本日人氣: {% if visit_by_date_blog %}{{ visit_by_date_blog.num_visit }}{% else %}0{% endif %}</p>
+          <p>累積人氣: {{ arti.blog.total_visit }}</p>
       </div>
     </div>
 {% endblock %}

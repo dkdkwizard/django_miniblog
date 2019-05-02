@@ -8,6 +8,9 @@
   <div class="title">
     <h2><a href="{{ blog.get_url }}">{{ blog.title }}</a></h2>
     <p style='color: gray'>{{ blog.description }}</p>
+    {% if user == blog.user %}
+      <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ 發表新文章</a></p>
+    {% endif %}
     <hr>
   </div>
   <div class="blog-content">

@@ -2,7 +2,7 @@
 
 body{
     font-family: 'cwTeXYen', sans-serif;
-    line-height: 2;
+    line-height: 1.5;
     font-size: 18px;
     font-weight: 300;
 }
@@ -25,6 +25,25 @@ div.sidebar-left{
 div.blog-content{
     width:70%;
     float:left;
+    line-height: 1;
+}
+
+div.last_next_article{
+    line-height: 1;
+}
+
+div.last_article{
+    float: left;
+    width: 50%;
+}
+
+div.next_article{
+    float: right;
+    width: 50%;
+}
+
+div.comment{
+    clear: both;
 }
 
 .imgbox {
