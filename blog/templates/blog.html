@@ -6,7 +6,7 @@
 
 {% block content %}
   <div class="title">
-    <h2><a href="{{ blog.get_url }}">{{ blog.title }}</a></h2>
+    <h1><a href="{{ blog.get_url }}">{{ blog.title }}</a></h1>
     <p style='color: gray'>{{ blog.description }}</p>
     {% if user == blog.user %}
       <p><a href="{%url 'createarticle' blog=blog.name_field %}">+ 發表新文章</a></p>
@@ -15,7 +15,7 @@
   </div>
   <div class="blog-content">
     {% for arti in article %}
-    <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
+    <h2><a href="{{ arti.get_url }}">{{ arti.title }}</a></h2>
     <h6 style="color: rgb(199, 199, 199)">發表於: {{ arti.creation_time }}</h6>
     {{ arti.content|safe }}
     <hr>
