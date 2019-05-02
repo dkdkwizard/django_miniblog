@@ -52,5 +52,5 @@ def n_day_hot(n, model):
     n_day_before = datetime.date.today() - datetime.timedelta(days=n)
     q = model.objects.filter(visitbydate__date__gte=n_day_before).annotate(n_day_visit=Sum('visitbydate__num_visit')).order_by('-n_day_visit')
     if q.count() == 0:
-        q = model.object.order_by('total_visit')
+        q = model.objects.order_by('total_visit')
     return q
