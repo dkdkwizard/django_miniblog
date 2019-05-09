@@ -7,12 +7,12 @@
 {% block content %}
   <h1>部落格網站</h1>
   <p>你好啊。</p>
-  <!--h2>本週熱門部落格</h2-->
+  <h2>本週熱門部落格</h2-->
   {% for b in hot_blogs %}
     <h4><a href="{{ b.get_url }}">{{ b.title }}</a></h4>
     <p> {{ b.description }} </p>
   {% endfor %}
-  <!--h2>本週熱門文章:</h2-->
+  <h2>本週熱門文章:</h2-->
   {% for arti in hot_artis %}
     <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
     <p>
