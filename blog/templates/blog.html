@@ -17,7 +17,7 @@
     {% for arti in article %}
     <h2><a href="{{ arti.get_url }}">{{ arti.title }}</a></h2>
     <h6 style="color: rgb(199, 199, 199)">發表於: {{ arti.creation_time }}</h6>
-    {{ arti.content|safe }}
+    {{ arti.content|safe|truncatechars_html:40 }}
     <hr>
     {% endfor %}
     {% if user == blog.user %}
