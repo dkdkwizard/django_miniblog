@@ -28,7 +28,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('accounts/signup', blog.views.signup, name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', RedirectView.as_view(url='blog/', permanent=False)),
+    path('', RedirectView.as_view(url='blog/', permanent=True)),
     # path('ckeditor/', include('ckeditor_uploader.urls')),
     path('ckeditor/upload/', uploader_views.upload, name='ckeditor_upload'),
     path('ckeditor/browse/', never_cache(uploader_views.browse), name='ckeditor_browse'),

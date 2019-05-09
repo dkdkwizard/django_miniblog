@@ -7,12 +7,12 @@
 {% block content %}
   <h1>部落格網站</h1>
   <p>你好啊。</p>
-  <h2>本週熱門部落格</h2>
+  <!--h2>本週熱門部落格</h2-->
   {% for b in hot_blogs %}
     <h4><a href="{{ b.get_url }}">{{ b.title }}</a></h4>
     <p> {{ b.description }} </p>
   {% endfor %}
-  <h2>本週熱門文章:</h2>
+  <!--h2>本週熱門文章:</h2-->
   {% for arti in hot_artis %}
     <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
     <p>
@@ -22,12 +22,16 @@
     </p>
   {% endfor %}
   <h2>最新發表文章:</h2>
-  {% for arti in new_arti %}
-    <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
-    <p>
-      由 <a href="{% url 'user' id=arti.blog.user.pk %}">{{ arti.blog.user.profile.pen_name }}</a>
-      發表於: <a href="{{ arti.blog.get_url }}">{{ arti.blog.title }}</a>
-      <span style="color: rgb(199, 199, 199)"> {{ arti.creation_time }} </span>
-    </p>
-  {% endfor %}
+  {% if new_arti %}
+    {% for arti in new_arti %}
+      <h4><a href="{{ arti.get_url }}">{{ arti.title }}</a></h4>
+      <p>
+        由 <a href="{% url 'user' id=arti.blog.user.pk %}">{{ arti.blog.user.profile.pen_name }}</a>
+        發表於: <a href="{{ arti.blog.get_url }}">{{ arti.blog.title }}</a>
+        <span style="color: rgb(199, 199, 199)"> {{ arti.creation_time }} </span>
+      </p>
+    {% endfor %}
+  {% else %}
+    <p>目前沒有任何文章</p>
+  {% endif %}
 {% endblock %}

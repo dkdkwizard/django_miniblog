@@ -22,9 +22,9 @@ def index(request):
     hot_blogs = n_day_hot(7, Blog)[:3]
     hot_artis = n_day_hot(7, Article)[:3]
     context = {
-        'new_arti': new_arti,
-        'hot_blogs': hot_blogs,
-        'hot_artis': hot_artis,
+        # 'new_arti': new_arti,
+        # 'hot_blogs': hot_blogs,
+        # 'hot_artis': hot_artis,
     }
     return render(request, 'index.html', context=context)
 
