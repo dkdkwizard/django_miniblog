@@ -31,7 +31,7 @@ def index(request):
 
 def signup(request):
     if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('index'))
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -41,7 +41,6 @@ def signup(request):
             if form.cleaned_data['photo']:
                 user.profile.photo = form.cleaned_data['photo']
             user.profile.save()
-            
             user.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)

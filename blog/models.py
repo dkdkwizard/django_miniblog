@@ -47,7 +47,7 @@ class Blog(models.Model):
 
 class Article(models.Model):
     
-    title = models.CharField(max_length=50, help_text='Article\'s title')
+    title = models.CharField(max_length=50, help_text='文章的標題')
     url_name = models.CharField(max_length=50, null=True, blank=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     content = RichTextUploadingField(null=True, blank=True)
@@ -127,7 +127,7 @@ class Profile(models.Model):
     photo = models.ImageField(upload_to=PathAndRename('portrait/'), default='portrait/default.png')
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username}_Profile'
         
 USING_S3 = os.environ.get('USING_S3', False)
 

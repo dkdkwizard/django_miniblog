@@ -15,10 +15,19 @@ class SignUpForm(UserCreationForm):
     bio = forms.CharField(widget=forms.Textarea(attrs={
         'style': 'resize:None;'
     }), help_text='關於你.', label='自我介紹')
+    password1 = forms.CharField(label=_("密碼"),
+                                widget=forms.PasswordInput,
+                                help_text='密碼需超過8個字，並至少有一個英文字母')
+    password2 = forms.CharField(label=_("再次輸入密碼"),
+                                widget=forms.PasswordInput,
+                                help_text=_("再次輸入密碼以供驗證"))
 
     class Meta:
         model = User
         fields = ['username', 'photo', 'pen_name', 'bio', 'password1', 'password2', ]
+        labels = {
+            'username': '使用者名稱',
+        }
 
 
 class EditUserForm(forms.Form):
