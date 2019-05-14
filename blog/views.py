@@ -316,7 +316,6 @@ def create_article_view(request, blog):
     
     if request.method == 'POST':
         form = CreateArticleForm(request.POST, cat=cat)
-        form
         if form.is_valid():
             article = Article.objects.create(blog=blog, creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
             article.title = form.cleaned_data.get('title')
@@ -330,13 +329,7 @@ def create_article_view(request, blog):
             article.category = form.cleaned_data.get('cat')
             article.save()
             dt = article.creation_time
-            return HttpResponseRedirect(reverse('article', kwargs={
-                'blog': blog.name_field,
-                'arti': article.url_name,
-                'year': dt.year,
-                'month': dt.month,
-                'day': dt.day,
-            }))
+            return HttpResponseRedirect(article.get_url())
 
     else:
         form = CreateArticleForm(cat=cat)
@@ -362,13 +355,7 @@ def modify_article_view(request, blog, id):
             article.category = form.cleaned_data.get('cat')
             article.save()
             dt = article.creation_time
-            return HttpResponseRedirect(reverse('article', kwargs={
-                'blog': article.blog.name_field,
-                'arti': article.url_name,
-                'year': dt.year,
-                'month': dt.month,
-                'day': dt.day,
-            }))
+            return HttpResponseRedirect(article.get_url())
 
     else:
         form = CreateArticleForm(
