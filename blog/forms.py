@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from ckeditor.widgets import CKEditorWidget
 from ckeditor.fields import RichTextFormField
 from ckeditor_uploader.fields import RichTextUploadingFormField
 
@@ -65,7 +66,7 @@ class CreateBlogForm(forms.ModelForm):
 class CreateArticleForm(forms.ModelForm):
     content = RichTextUploadingFormField(label='內文')
     cat = forms.ChoiceField(choices=[('unclassified', '--')], widget=forms.Select(attrs={
-        'style': 'height:30px;width:20%',
+        'style': 'height:30px;',
     }))
 
     def __init__(self, *args, **kwargs):

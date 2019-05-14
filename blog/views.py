@@ -321,11 +321,11 @@ def create_article_view(request, blog):
             article = Article.objects.create(blog=blog, creation_time=datetime.datetime.now(), last_modify_time=datetime.datetime.now())
             article.title = form.cleaned_data.get('title')
             n = blog.article_set.filter(title=article.title).filter(creation_time__date=article.creation_time.date()).count()
+            t = article.title.replace(' ', '-')
             if n > 0:
-                article.url_name = article.title + f'-{n+1}'
+                article.url_name = t + f'-{n+1}'
             else:
-                article.url_name = article.title
-
+                article.url_name = t
             article.content = form.cleaned_data.get('content')
             article.category = form.cleaned_data.get('cat')
             article.save()
