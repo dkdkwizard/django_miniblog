@@ -64,7 +64,9 @@ class CreateBlogForm(forms.ModelForm):
 
 class CreateArticleForm(forms.ModelForm):
     content = RichTextUploadingFormField(label='內文')
-    cat = forms.ChoiceField(choices=[('unclassified', '--')])
+    cat = forms.ChoiceField(choices=[('unclassified', '--')], widget=forms.Select(attrs={
+        'style': 'height:30px;'
+    }))
 
     def __init__(self, *args, **kwargs):
         cat = kwargs.pop('cat', [])
@@ -78,6 +80,9 @@ class CreateArticleForm(forms.ModelForm):
         labels = {
             'title': '文章標題',
             'content': '內文',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'style': 'width:30%;'})
         }
 
 
