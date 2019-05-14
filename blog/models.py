@@ -18,13 +18,17 @@ from ckeditor_uploader.fields import RichTextUploadingField
 class Blog(models.Model):
 
     title = models.CharField(max_length=20, help_text='Blog\'s title')
-    category = models.CharField(max_length=20000, default='[]')  # list of categorys set and load with json
     description = models.TextField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField('Creation Date')
     name_field = models.CharField(max_length=20, help_text='Blog\'s name field', default='')  # to avoid same title blogs
+        
+    category = models.CharField(max_length=20000, default='[]')  # list of categorys set and load with json
     total_visit = models.PositiveIntegerField(default=0)
     visitbydate = GenericRelation('VisitByDate')
+
+    def get_url(self):
+        return reverse('blog', args=[self.name_field])
 
     class Meta:
         ordering = ['title']
@@ -37,9 +41,6 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_url(self):
-        return reverse('blog', args=[self.name_field])
     
     def create_arti_url(self):
         return reverse('createarticle', args=[self.name_field])
@@ -85,7 +86,6 @@ class Article(models.Model):
 class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField(max_length=300)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     sign = models.CharField(max_length=20)
     time = models.DateTimeField()
 

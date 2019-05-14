@@ -1,0 +1,23 @@
+<div class="author">
+  <h4>關於我 :</h4>
+    <div class="imgbox" style="width:100px;height:100px;">
+      <a href="{% url 'user' id=blog.user.pk %}"><img src="{{ blog.user.profile.photo.url }}" ></a>
+    </div>
+  <p><a href="{% url 'user' id=blog.user.pk %}">{{ blog.user.profile.pen_name }}</a></p>
+</div>
+<div class="category">
+  <h4>分類 :</h4>
+  <ul class="sidebar-nav">
+    {% for c1, c2 in cat %} 
+      <li><a href="{% url 'blog_category_query' blog=blog.name_field cat=c1 %}">{{ c1 }} ({{ c2 }})</a></li>
+    {% endfor %}
+    <li><a href="{% url 'blog_category_query' blog=blog.name_field cat='unclassified' %}">未分類文章({{ num_unclass }})</a></li>
+  </ul>
+  {% if user == blog.user %}
+    <a href="{% url 'editcategory' blog=blog.name_field%}">編輯分類</a>
+  {% endif %}
+</div>
+<div>
+  <p>本日人氣: {% if visit_by_date %}{{ visit_by_date.num_visit }}{% else %}0{% endif %}</p>
+  <p>累積人氣: {{ blog.total_visit }}</p>
+</div>

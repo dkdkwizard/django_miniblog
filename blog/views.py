@@ -60,7 +60,6 @@ def user_page_view(request, id):
     user = get_object_or_404(User, pk=id)
     profile = user.profile
     blog = user.blog_set
-    comment = user.comment_set
 
     if request.method == 'POST':
         if 'remove' in request.POST:
@@ -70,7 +69,6 @@ def user_page_view(request, id):
     context = {
         'that_user': user,
         'blog': blog,
-        'comment': comment,
     }
 
     return render(request, 'user.html', context=context)
@@ -264,6 +262,7 @@ def article_view(request, blog, year, month, day, arti):
 
     context = {
         'arti': arti,
+        'blog': blog,
         'form': form,
         'cat': cat,
         'num_unclass': num_unclass,
