@@ -19,12 +19,12 @@ def add_visit_number(request, obj):
     if request.user != user:
         visited = request.session.get(dict_name, None)
         # print(dict_name, visited)
-        if not visited or str(obj.pk) not in visited:  # haven't visit any blog or haven't visit this blog
+        if not visited or str(obj.pk) not in visited:  # haven't visit any obj or haven't visit this obj
             if not visited:
                 request.session[dict_name] = {obj.pk: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
             else:
                 visited[str(obj.pk)] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            if visit_by_date:  # whether this blog haven't been visited today or not
+            if visit_by_date:  # whether this obj haven't been visited today or not
                 visit_by_date.num_visit += 1
             else:
                 obj.visitbydate.create(num_visit=1, date=datetime.date.today())

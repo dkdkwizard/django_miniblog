@@ -21,6 +21,7 @@ def index(request):
     new_arti = Article.objects.order_by('-creation_time')[:3]
     hot_blogs = n_day_hot(7, Blog)[:3]
     hot_artis = n_day_hot(7, Article)[:3]
+    print(Blog.objects.filter(visitbydate__date=datetime.date.today()).order_by('-visitbydate__num_visit'))
     context = {
         'new_arti': new_arti,
         'hot_blogs': hot_blogs,
@@ -268,7 +269,7 @@ def article_view(request, blog, year, month, day, arti):
         'num_unclass': num_unclass,
         'last_arti_cat': last_arti_cat,
         'next_arti_cat': next_arti_cat,
-        'visit_by_date_blog': visit_by_date_blog,
+        'visit_by_date': visit_by_date_blog,
     }
 
     return render(request, 'article.html', context=context)
