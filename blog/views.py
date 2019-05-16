@@ -21,7 +21,6 @@ def index(request):
     new_arti = Article.objects.order_by('-creation_time')[:3]
     hot_blogs = n_day_hot(7, Blog)[:3]
     hot_artis = n_day_hot(7, Article)[:3]
-    print(Blog.objects.filter(visitbydate__date=datetime.date.today()).order_by('-visitbydate__num_visit'))
     context = {
         'new_arti': new_arti,
         'hot_blogs': hot_blogs,
