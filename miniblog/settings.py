@@ -85,7 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'miniblog.wsgi.application'
 
-
+USING_HEROKU = os.environ.get('USING_HEROKU', False)
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -95,7 +95,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+if USING_HEROKU:
+    # Heroku: Update database configuration from $DATABASE_URL.
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -152,10 +155,6 @@ if USING_S3:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # The URL to use when referring to static files (where they will be served from)
     STATIC_URL = '/static/'
-
-    # Heroku: Update database configuration from $DATABASE_URL.
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)
 
     # aws S3 storage
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
