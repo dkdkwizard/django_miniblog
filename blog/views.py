@@ -136,6 +136,19 @@ def blog_view(request, blog):
     return render(request, 'blog.html', context=context)
 
 
+def blog_manage_view(request, blog):
+    blog = get_object_or_404(Blog, name_field=blog)
+    if request.user != blog.user:
+        next = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(next)
+    arti_set = blog.article_set.all()
+    context = {
+        'blog': blog,
+        'arti_set': arti_set,
+    }
+    return render(request, 'blog_manage.html', context=context)
+
+
 def blog_query_by_category_view(request, blog, cat):
     blog = get_object_or_404(Blog, name_field=blog)
     visit_by_date = add_visit_number(request, blog)
@@ -162,12 +175,12 @@ def blog_query_by_category_view(request, blog, cat):
 @login_required
 def edit_category_view(request, blog):
     blog = get_object_or_404(Blog, name_field=blog)
-    cat = blog.get_category()
     # CategoryFormSet = forms.formset_factory(CategoryForm, formset=BaseCategoryFormSet, max_num=20)
     if request.user != blog.user:
         next = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(next)
-    
+
+    cat = blog.get_category()
     if request.method == 'POST':
         if 'edit' in request.POST:
             formset = CategoryFormSet(request.POST)

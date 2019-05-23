@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ blog.title }}</title>
+{% endblock %}
+
+{% block content %}
+  <div class="title">
+    <h1><a href="{{ blog.get_url }}">{{ blog.title }}</a></h1>
+    <p style='color: gray'>{{ blog.description }}</p>
+    <hr>
+  </div>
+  <div class="c">
+    <h3><a href="#c1">+ 分類</a></h3>
+    <div class="collapse_body" name="c1">
+      <p>123</p>
+    </div>
+  </div>
+  <div class="c">
+    <h3><a href="#c2">+ 文章</a></h3>
+    <div class="collapse_body" name="c2">
+      <p><a class="del" href="#c2">刪除</a></p>
+      <ul>
+        {%for arti in arti_set %}
+          <li>
+            <div class="item" name="{{ arti.pk }}">
+              <input class="select" type="checkbox"><a href="{{ arti.get_url }}" target="blank">{{ arti.title }}</a>
+              <br><a href="{{ arti.modify_url }}">編輯</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+  const col = $("div.c");
+  for(var i=0; i< col.length; i++){
+    var a = col[i].querySelector('a');
+    a.addEventListener("click", colclick)
+
+  }
+  function colclick(){
+    const par = this.parentElement.parentElement;
+    const col_body = par.querySelector("div.collapse_body")
+    if(col_body.style.display == "block"){
+      col_body.style.display = "none";
+      this.textContent = "+" + this.textContent.substr(1, this.textContent.length)
+    }
+    else{
+      col_body.style.display = "block";
+      this.textContent = "-" + this.textContent.substr(1, this.textContent.length)
+    }
+  }
+  const del = document.querySelector("a.del")
+  del.addEventListener("click",function(){
+    const par = this.parentElement.parentElement
+    const items = $("div.item")
+    var todel = []
+    for(var i=0; i<items.length; i++){
+      if(items[i].querySelector("input.select").checked){
+        todel.push(items[i].getAttribute("name"))
+    }}
+    
+    console.log(todel)
+  })
+</script>
+{% endblock %}

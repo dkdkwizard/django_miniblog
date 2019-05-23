@@ -35,3 +35,17 @@
     <p>目前沒有任何文章</p>
   {% endif %}
 {% endblock %}
+{% block script %}
+<script>
+var b = document.querySelector('button')
+b.addEventListener("click", al)
+function al(){
+  if (confirm("ccc")==true){
+    console.log('t')
+  }
+  else{
+    console.log('f')
+  }
+}
+</script>
+{% endblock %}

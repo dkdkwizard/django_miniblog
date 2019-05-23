@@ -46,6 +46,10 @@ div.comment{
     clear: both;
 }
 
+div.collapse_body{
+    display: none;
+}
+
 .imgbox {
     overflow: hidden;
     position: relative;

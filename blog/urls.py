@@ -9,6 +9,7 @@ urlpatterns = [
     path('edit-user', views.edit_user_view, name='edituser'),
     re_path(r'^user/(?P<id>\d+)$', views.user_page_view, name='user'),
     re_path(r'^(?P<blog>.+)/create$', views.create_article_view, name='createarticle'),
+    re_path(r'^(?P<blog>.+)/manage$', views.blog_manage_view, name='blog_manage'),
     re_path(r'^(?P<blog>.+)/category/edit$', views.edit_category_view, name='editcategory'),
     re_path(r'^(?P<blog>.+)/category/(?P<cat>.+)$', views.blog_query_by_category_view, name='blog_category_query'),
     re_path(r'^(?P<blog>.+)/(?P<id>.+)/m$', views.modify_article_view, name='modify_article'),

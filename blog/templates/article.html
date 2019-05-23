@@ -9,7 +9,7 @@
   <h2>{{ arti.title }}</h2>
   <h6 style="color: rgb(199, 199, 199)">發表於: {{ arti.creation_time }}</h6>
   {% if user == arti.blog.user%}
-    <p><a href="{{ arti.modify_url }}">編輯</a>   <a href="{{ arti.del_url }}">刪除</a></p>
+    <p><a href="{{ arti.modify_url }}">編輯</a>   <a class="delete" href="">刪除</a></p>
   {% endif %}
   <hr>
   <div class="blog-content">
@@ -70,4 +70,17 @@
   <div class="sidebar-left">
     {% include 'blog_right_sidebar.html' %}
   </div>
+{% endblock %}
+{% block script %}
+<script>
+  var a = document.querySelector('a.delete');
+  a.addEventListener("click", del_art);
+  function del_art(){
+    var msg = "刪除後不可回復，確定要刪除?";
+    if(confirm(msg) == true){
+      a.href = "{{ arti.del_url }}";
+    }
+  }
+
+</script>
 {% endblock %}
