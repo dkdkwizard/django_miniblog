@@ -20,7 +20,7 @@ https://miniblog-72415.herokuapp.com/blog/
 ![post page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/3.png)
 
 ### 個人頁面
-![user page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/2.png)
+![user page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/4.png)
 
 ### 部落格管理
-![manage page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/2.png)
+![manage page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/5.png)
