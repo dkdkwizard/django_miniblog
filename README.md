@@ -10,5 +10,17 @@ https://miniblog-72415.herokuapp.com/blog/
 
 圖片Demo
 ----
-#### 首頁
+### 首頁
 ![index](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/1.png)
+
+### 文章頁面
+![article page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/2.png)
+
+### 發表文章
+![post page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/3.png)
+
+### 個人頁面
+![user page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/2.png)
+
+### 部落格管理
+![manage page](https://github.com/dkdkwizard/django_miniblog/blob/master/demo_pics/2.png)
