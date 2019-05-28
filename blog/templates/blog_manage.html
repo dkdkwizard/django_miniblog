@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>{{ blog.title }}</title>
+<title>{{ blog.title }}&nbsp;管理</title>
 {% endblock %}
 
 {% block content %}
   <div class="title">
-    <h1><a href="{{ blog.get_url }}">{{ blog.title }}</a></h1>
+    <h1><a href="{{ blog.get_url }}">{{ blog.title }}</a>&nbsp;管理</h1>
     <p style='color: gray'>{{ blog.description }}</p>
     <p><a id="delete_blog" href="#delete_blog">刪除</a></p>
     <hr>
@@ -20,8 +20,10 @@
         {%for arti in arti_set %}
           <li>
             <div class="item" name="{{ arti.pk }}">
-              <input class="select" type="checkbox"><a href="{{ arti.get_url }}" target="blank">{{ arti.title }}</a>
-              <br><a href="{{ arti.modify_url }}">編輯</a>
+              <h4>
+                <input class="select" type="checkbox"><a href="{{ arti.get_url }}" target="blank">{{ arti.title }}</a>
+                <br><span style="font-size:18px"><a href="{{ arti.modify_url }}">編輯</a> 造訪人次:&nbsp;{{ arti.total_visit }}&nbsp; 分類:&nbsp;{{ arti.category}}</span> 
+              </h4>
             </div>
           </li>
         {% endfor %}
