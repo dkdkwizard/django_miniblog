@@ -8,6 +8,7 @@
   <div class="title">
     <h1><a href="{{ blog.get_url }}">{{ blog.title }}</a></h1>
     <p style='color: gray'>{{ blog.description }}</p>
+    <p><a id="delete_blog" href="#delete_blog">刪除</a></p>
     <hr>
   </div>
   <div class="c">
@@ -16,10 +17,10 @@
       <p>123</p>
     </div>
   </div>
-  <div class="c">
+  <div class="c" id="articles">
     <h3><a href="#c2">+ 文章</a></h3>
     <div class="collapse_body" name="c2">
-      <p><a class="del" href="#c2">刪除</a></p>
+      <p><a class="del" href="#c2">刪除所選</a></p>
       <ul>
         {%for arti in arti_set %}
           <li>
@@ -37,11 +38,19 @@
 {% block script %}
 <script>
 
+  var a = $('#delete_blog')[0];
+    a.addEventListener("click", del_art);
+    function del_art(){
+      var msg = "刪除後不可回復，確定要刪除?";
+      if(confirm(msg) == true){
+        this.href = "{% url 'delete_blog' blog=blog.name_field %}"
+      }
+    }
+
   const col = $("div.c");
   for(var i=0; i< col.length; i++){
     var a = col[i].querySelector('a');
     a.addEventListener("click", colclick)
-
   }
   function colclick(){
     const par = this.parentElement.parentElement;
@@ -55,6 +64,42 @@
       this.textContent = "-" + this.textContent.substr(1, this.textContent.length)
     }
   }
+
+  //Django basic setup for accepting ajax requests.
+  // Cookie obtainer Django
+
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+  // Setup ajax connections safetly
+
+  function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+
+
   const del = document.querySelector("a.del")
   del.addEventListener("click",function(){
     const par = this.parentElement.parentElement
@@ -64,8 +109,26 @@
       if(items[i].querySelector("input.select").checked){
         todel.push(items[i].getAttribute("name"))
     }}
-    
-    console.log(todel)
-  })
+    todel = todel.join(',')
+    $.ajax({
+      url: "{% url 'del_article_ajax' %}",
+      data: {
+        "todel": todel,
+        "blog": "{{ blog.name_field }}",
+      },
+      dataType: "json",
+      type: "POST",
+      success: function(data){
+        if (data.html){
+          $('#articles').html(data.html);
+          var a = $('#articles')[0].querySelector('a');
+          a.addEventListener("click", colclick);
+          a.click()
+        }
+
+      }
+    });
+  });
+
 </script>
 {% endblock %}

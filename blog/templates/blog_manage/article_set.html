@@ -1,0 +1,14 @@
+<h3><a href="#c2">+ 文章</a></h3>
+<div class="collapse_body" name="c2">
+  <p><a class="del" href="#c2">刪除</a></p>
+  <ul>
+    {%for arti in arti_set %}
+      <li>
+        <div class="item" name="{{ arti.pk }}">
+          <input class="select" type="checkbox"><a href="{{ arti.get_url }}" target="blank">{{ arti.title }}</a>
+          <br><a href="{{ arti.modify_url }}">編輯</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

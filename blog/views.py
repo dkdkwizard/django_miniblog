@@ -2,12 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.db.models import Avg, Count, Min, Sum
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 from django.conf import settings
+from django.template.loader import render_to_string
 
 from blog.models import Blog, Article, Comment, VisitByDate
 from blog.forms import SignUpForm, CreateBlogForm, CreateArticleForm, CommentForm, EditUserForm, CategoryForm, CategoryFormSet
@@ -148,6 +149,15 @@ def blog_manage_view(request, blog):
     }
     return render(request, 'blog_manage.html', context=context)
 
+
+def blog_delete_view(request, blog):
+    blog = get_object_or_404(Blog, name_field=blog)
+    if request.user != blog.user:
+        next = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(next)
+    blog.delete()
+    return HttpResponseRedirect(reverse('myblog'))
+    
 
 def blog_query_by_category_view(request, blog, cat):
     blog = get_object_or_404(Blog, name_field=blog)
@@ -297,6 +307,28 @@ def delete_article_view(request, blog, year, month, day, arti):
     )
     arti.delete()
     return HttpResponseRedirect(reverse('blog', args=[blog.name_field]))
+
+
+def delete_article_ajax(request):
+    if request.is_ajax():
+        blog = request.POST.get('blog')
+        blog = get_object_or_404(Blog, name_field=blog)
+        if request.user != blog.user:
+            JsonResponse({})
+        arti_set = blog.article_set.all()
+        
+        todel = request.POST.get('todel')
+        todel = todel.split(',')
+        for d in todel:
+            arti = arti_set.get(id=d)
+            arti.delete()
+        context = {
+            'blog': blog,
+            'arti_set': arti_set,
+        }
+        html = render_to_string('blog_manage/article_set.html', context=context)
+        data = {'html': html}
+    return JsonResponse(data, status=200)
 
 
 @login_required
