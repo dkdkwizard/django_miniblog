@@ -132,8 +132,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+# CKEDITOR
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': '500',
+        'width': '150%',
+        'resize_enabled': False,
+    },
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
