@@ -2,7 +2,7 @@ astroid==2.2.5
 boto3==1.9.135
 colorama==0.4.1
 dj-database-url==0.5.0
-Django==2.2.13
+Django==2.2.20
 django-ckeditor==5.6.1
 django-js-asset==1.2.2
 django-storages==1.7.1
